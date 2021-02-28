@@ -80,11 +80,17 @@ const poplationLayer = L.geoPackageFeatureLayer([], {
     }
 });
 
+const demLayer = L.geoPackageFeatureLayer([], {
+    geoPackageUrl: './data/db.gpkg',
+    layerName: 'dem',
+});
+
 //背景レイヤ
 const optionLayersList = {
     '避難所': hinanjyoLayer,
     '断水エリア': dansuiAreaLayer,
     '人口': poplationLayer,
+    '標高': demLayer,
 };
 
 //レイヤ設定
