@@ -18,16 +18,6 @@ const map = L.map('map', {
     layers: [m_streets],
 });
 
-/*
-ToDo:
-
-- 避難所
-- 断水エリア
-- 人口メッシュ
-
-レイヤの切り替え
-*/
-
 L.control
     .scale({
         imperial: false,
@@ -83,6 +73,11 @@ const poplationLayer = L.geoPackageFeatureLayer([], {
 const demLayer = L.geoPackageFeatureLayer([], {
     geoPackageUrl: './data/db.gpkg',
     layerName: 'dem',
+    style: () => {
+        return {
+            opacity: 0.5
+        }
+    }
 });
 
 //背景レイヤ
