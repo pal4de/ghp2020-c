@@ -6,7 +6,7 @@ const attribution = `
     <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>`
 
 const m_streets = new L.tileLayer(
-    `https://api.maptiler.com/maps/jp-mierune-streets/256/{z}/{x}/{y}.png?key=${API_KEY}`,
+    `https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png`,
     {
         attribution: attribution
     }
