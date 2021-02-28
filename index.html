@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@3.0.3/dist/leaflet-geopackage.min.js"></script>
+    <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
     <title>GHP2020 Cチーム</title>
 </head>
 <body>
-
+    <div id="map"></div>
+    <form id="control">
+        <label for="watarstation-count">給水所の数</label>
+        <input type="number" name="watarstation-count" id="watarstation-count" value="0">
+    </form>
+    <script src="secret.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
