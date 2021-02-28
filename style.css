@@ -11,34 +11,34 @@ html, body {
 
 #control {
     box-sizing: border-box;
-    position: absolute;
     width: min(calc(100vw - 20px), 400px);
-    background-color: #fff;
+    position: fixed;
     bottom: 0;
     right: 0;
     left: 0;
     margin: auto;
     padding: 20px;
-    box-shadow: 0 0 10px 1px hsla(210deg, 83%, 17%, 50%);
-    border-radius: 20px 20px 0 0;
     color: #222;
+    background-color: #fff;
+    box-shadow: 0 0 10px 1px hsla(210deg, 83%, 17%, 20%);
+    border-radius: 20px 20px 0 0;
 }
 
-label, input {
+#control label, #control input {
     display: block;
     width: 100%;
     text-align: left;
 }
 
-label {
+#control label {
     font-weight: 900;
     font-size: 15px;
 }
 
-input {
-    font-size: 30px;
+#control input {
     box-sizing: border-box;
     padding: 10px;
     border: #ddd 3px solid;
     border-radius: 5px;
+    font-size: 30px;
 }
