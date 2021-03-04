@@ -17,7 +17,8 @@ html, body {
     right: 0;
     left: 0;
     margin: auto;
-    padding: 20px;
+    padding: 15px;
+    padding-bottom: 0px;
     color: #222;
     background-color: #fff;
     box-shadow: 0 0 10px 1px hsla(210deg, 83%, 17%, 20%);
@@ -41,4 +42,5 @@ html, body {
     border: #ddd 3px solid;
     border-radius: 5px;
     font-size: 30px;
+    margin-bottom: 15px;
 }
