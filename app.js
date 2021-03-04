@@ -1,21 +1,16 @@
 // source: https://day-journal.com/memo/try-054/
 
-const attribution = `
-    <a href="https://maptiler.jp/" target="_blank">&copy; MIERUNE</a>
-    <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a>
-    <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>`
-
-const m_streets = new L.tileLayer(
-    `https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png`,
+const basicMap = new L.tileLayer(
+    'https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png',
     {
-        attribution: attribution
+        attribution: `&copy; <a href="www.openstreetmap.org" target="_blank">OpenStreetMap</a> contributors`
     }
 );
 const map = L.map('map', {
     center: [32.805100137858226, 130.77487836209724],
     zoom: 14,
     zoomControl: true,
-    layers: [m_streets],
+    layers: [basicMap],
 });
 
 L.control
@@ -58,8 +53,8 @@ const poplationLayer = L.geoPackageFeatureLayer([], {
         const population = geoJsonFeature.properties.ptn_2020;
         const color = population < 770  ? '#fef0d9' :
                       population < 1540 ? '#fdcc8a' :
-                      population < 2311 ? '#fc8d59' :
-                      population < 3081 ? '#e34a33' :
+                      population < 2310 ? '#fc8d59' :
+                      population < 3080 ? '#e34a33' :
                                           '#b30000' ;
         return {
             color: '#ffffff',
