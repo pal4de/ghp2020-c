@@ -1,0 +1,23 @@
+{
+  "name": "mizreach",
+  "version": "1.0.0",
+  "description": "G空間を主題としたハッカソン「*Geospatial Hackers 2020*」において制作。",
+  "main": "index.html",
+  "dependencies": {
+    "sass": "^1.32.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pal4de/ghp2020-c.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pal4de/ghp2020-c/issues"
+  },
+  "homepage": "https://github.com/pal4de/ghp2020-c#readme"
+}
