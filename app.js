@@ -50,16 +50,25 @@ const poplationLayer = L.geoPackageFeatureLayer([], {
     geoPackageUrl: './data/db.gpkg',
     layerName: '500m_mesh_2018_43',
     style: (geoJsonFeature) => {
+        const selectColor = (population) => {
+            if (population < 770) {
+                return '#fef0d9';
+            } else if (population < 1540) {
+                return '#fdcc8a';
+            } else if (population < 2310) {
+                return '#fc8d59';
+            } else if (population < 3080) {
+                return '#e34a33';
+            } else {
+                return '#b30000';
+            }
+        }
+
         const population = geoJsonFeature.properties.ptn_2020;
-        const color = population < 770  ? '#fef0d9' :
-                      population < 1540 ? '#fdcc8a' :
-                      population < 2310 ? '#fc8d59' :
-                      population < 3080 ? '#e34a33' :
-                                          '#b30000' ;
         return {
             color: '#ffffff',
             weight: 1,
-            fillColor: color,
+            fillColor: selectColor(population),
             fillOpacity: 0.5,
         }
     }
