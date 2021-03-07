@@ -7,6 +7,7 @@ html, body {
     height: 100%;
     padding: 0;
     margin: 0;
+    font-family: 'Noto Sans JP', sans-serif;
 }
 
 .material-icons {
@@ -66,7 +67,7 @@ html, body {
 #control .subtext {
     color: #aaa;
     font-size: 80%;
-    font-weight: bolder;
+    font-weight: 500;
 }
 
 #control label, #control input {
@@ -76,7 +77,7 @@ html, body {
 }
 
 #control label {
-    font-weight: 900;
+    font-weight: 500;
     font-size: 15px;
 }
 
