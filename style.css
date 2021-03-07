@@ -29,6 +29,18 @@ html, body {
     }
 }
 
+#map h6 {
+    margin: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+}
+
+#map p {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
 #control {
     position: absolute;
     box-sizing: border-box;
@@ -60,6 +72,7 @@ html, body {
 
 #control h1 {
     margin: 0;
+    margin-bottom: 15px;
     font-size: 200%;
     font-weight: 900;
 }

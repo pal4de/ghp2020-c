@@ -39,7 +39,16 @@ const hinanjyoLayer = L.geoPackageFeatureLayer([], {
     geoPackageUrl: './data/db.gpkg',
     layerName: 'hinanjyo',
     pointToLayer: (feature, layer) => {
-        return L.marker(layer, {icon: HinanjoIcon});
+        console.log(feature);
+        const marker = L.marker(layer, {icon: HinanjoIcon});
+        const popupContent = `
+            <h6>名称</h6>
+            <p>${feature.properties.p20_002}</p>
+            <h6>住所</h6>
+            <p>${feature.properties.p20_003}</p>
+        `;
+        marker.bindPopup(popupContent);
+        return marker;
     }
 });
 
@@ -102,10 +111,6 @@ const toggleControl = (show) => {
     if (show == undefined) {
         body.classList.toggle('control-opened');
     } else {
-        if (show) {
-            body.classList.add('control-opened');
-        } else {
-            body.classList.remove('control-opened');
-        }
+        body.classList[show ? 'add' : 'remove']('control-opened');
     }
 }
