@@ -5,8 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@3.0.3/dist/leaflet-geopackage.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="style.css">
     <title>ミズリーチ</title>
 </head>
@@ -18,14 +19,16 @@
         </section>
         <section>
             <form>
-                <!-- <label for="watarstation-count">給水所の数</label>
-                <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->
                 <label for="gpkg-selector">GeoPackageファイル</label>
                 <input type="file" accept=".gpkg" name="gpkg-selector" id="gpkg-selector" onchange="loadGeoPackage(this.files)">
+                <!-- <label for="watarstation-count">給水所の数</label>
+                <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->
             </form>
         </section>
     </div>
     <div id="map"></div>
+    <div id="fader" onclick="toggleControl(false)"></div>
+    <button id="control-toggler" class="material-icons" onclick="toggleControl()">menu</button>
     <script src="app.js"></script>
 </body>
 </html>

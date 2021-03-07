@@ -96,3 +96,16 @@ L.control.layers(null, optionalLayersList).addTo(map);
 for (const optinalLayer of Object.values(optionalLayersList)) {
     optinalLayer.addTo(map);
 }
+
+const toggleControl = (show) => {
+    const body = document.querySelector('body');
+    if (show == undefined) {
+        body.classList.toggle('control-opened');
+    } else {
+        if (show) {
+            body.classList.add('control-opened');
+        } else {
+            body.classList.remove('control-opened');
+        }
+    }
+}
