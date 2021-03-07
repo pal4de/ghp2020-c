@@ -52,8 +52,13 @@ const loadGeoPackage = async (file) => {
     return gp;
 }
 
-const handleGeoPackage = async (file) => {
+const handleGeoPackage = async (fileList) => {
+    if (fileList.length == 0) return;
+    const file = fileList[0];
+
+    document.querySelector('#gpkg-selector-wrapper').classList.add('gpkg-loading');
     const gpkg = await loadGeoPackage(file);
+    document.querySelector('#gpkg-selector-wrapper').classList.remove('gpkg-loading');
 
     const hinanjyoLayer = L.geoPackageFeatureLayer([], {
         geoPackage: gpkg,

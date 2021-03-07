@@ -23,7 +23,10 @@
         <section>
             <form>
                 <label for="gpkg-selector">GeoPackageファイル</label>
-                <input type="file" accept=".gpkg" name="gpkg-selector" id="gpkg-selector" onchange="handleGeoPackage(this.files[0])">
+                <div id="gpkg-selector-wrapper">
+                    <input type="file" accept=".gpkg" name="gpkg-selector" id="gpkg-selector" onchange="handleGeoPackage(this.files)">
+                    <div id="gpkg-selector-loading-text">読み込み中...</div>
+                </div>
                 <!-- <label for="watarstation-count">給水所の数</label>
                 <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->
             </form>

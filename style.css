@@ -83,23 +83,39 @@ html, body {
     font-weight: 500;
 }
 
-#control label, #control input {
+#control label {
     display: block;
     width: 100%;
     text-align: left;
-}
-
-#control label {
     font-weight: 500;
     font-size: 15px;
 }
 
-#control input {
+#gpkg-selector-wrapper {
     box-sizing: border-box;
-    padding: 10px;
     border: #ddd 3px solid;
     border-radius: 5px;
     margin-bottom: 15px;
+}
+
+#gpkg-selector {
+    display: inline-block;
+    padding: 10px;
+}
+
+.gpkg-loading #gpkg-selector {
+    width: 0;
+    padding: 0;
+}
+
+#gpkg-selector-loading-text {
+    display: none;
+    padding: 10px;
+    color: #aaa;
+}
+
+.gpkg-loading #gpkg-selector-loading-text {
+    display: inline-block;
 }
 
 #control-toggler {
