@@ -56,80 +56,90 @@ const handleGeoPackage = async (fileList) => {
     if (fileList.length == 0) return;
     const file = fileList[0];
 
-    document.querySelector('#gpkg-selector-wrapper').classList.add('gpkg-loading');
+    const gpkgSelectorWrapper = document.querySelector('#gpkg-selector-wrapper');
+    gpkgSelectorWrapper.classList.add('gpkg-loading');
     const gpkg = await loadGeoPackage(file);
-    document.querySelector('#gpkg-selector-wrapper').classList.remove('gpkg-loading');
+    gpkgSelectorWrapper.classList.remove('gpkg-loading');
 
-    const hinanjyoLayer = L.geoPackageFeatureLayer([], {
-        geoPackage: gpkg,
-        layerName: 'hinanjyo',
-        pointToLayer: (feature, layer) => {
-            const marker = L.marker(layer, {icon: HinanjoIcon});
-            const popupContent = `
-                <h6>名称</h6>
-                <p>${feature.properties.p20_002}</p>
-                <h6>住所</h6>
-                <p>${feature.properties.p20_003}</p>
-            `;
-            marker.bindPopup(popupContent);
-            return marker;
-        }
-    });
-
-    const dansuiAreaLayer = L.geoPackageFeatureLayer([], {
-        geoPackage: gpkg,
-        layerName: 'dansui_area',
-    });
-
-    const poplationLayer = L.geoPackageFeatureLayer([], {
-        geoPackage: gpkg,
-        layerName: '500m_mesh_2018_43',
-        style: (geoJsonFeature) => {
-            const selectColor = (population) => {
-                if (population < 770) {
-                    return '#fef0d9';
-                } else if (population < 1540) {
-                    return '#fdcc8a';
-                } else if (population < 2310) {
-                    return '#fc8d59';
-                } else if (population < 3080) {
-                    return '#e34a33';
-                } else {
-                    return '#b30000';
+    for (const tableName of gpkg.getFeatureTables()) {
+        const layer = L.geoPackageFeatureLayer([], {
+            geoPackage: gpkg,
+            layerName: tableName,
+            pointToLayer: (feature, layer) => {
+                const marker = L.marker(layer, {icon: HinanjoIcon});
+                return marker;
+            },
+            onEachFeature: (feature, layer) => {
+                let popupContent = '';
+                for (const [key, value] of Object.entries(feature.properties)) {
+                    popupContent += `<h6>${key}</h6><p>${value}</p>`
                 }
+                layer.bindPopup(popupContent);
             }
+        });
 
-            const population = geoJsonFeature.properties.ptn_2020;
-            return {
-                color: '#ffffff',
-                weight: 1,
-                fillColor: selectColor(population),
-                fillOpacity: 0.5,
-            }
-        }
-    });
-
-    const demLayer = L.geoPackageFeatureLayer([], {
-        geoPackage: gpkg,
-        layerName: 'dem',
-        style: () => {
-            return {
-                opacity: 0.5
-            }
-        }
-    });
-
-    const optionalLayersList = {
-        '避難所': hinanjyoLayer,
-        '断水エリア': dansuiAreaLayer,
-        '人口': poplationLayer,
-        '標高': demLayer,
-    };
-    L.control.layers(null, optionalLayersList).addTo(map);
-    for (const optinalLayer of Object.values(optionalLayersList)) {
-        optinalLayer.addTo(map);
-        if (optinalLayer.getBounds) map.fitBounds(optinalLayer.getBounds());
+        layer.addTo(map);
+        if (layer.getBounds) map.fitBounds(layer.getBounds());
     }
+
+    // const hinanjyoLayer = L.geoPackageFeatureLayer([], {
+    //     geoPackage: gpkg,
+    //     layerName: 'hinanjyo',
+    //     pointToLayer: (feature, layer) => {
+    //         const marker = L.marker(layer, {icon: HinanjoIcon});
+    //         const popupContent = `
+    //             <h6>名称</h6>
+    //             <p>${feature.properties.p20_002}</p>
+    //             <h6>住所</h6>
+    //             <p>${feature.properties.p20_003}</p>
+    //         `;
+    //         marker.bindPopup(popupContent);
+    //         return marker;
+    //     }
+    // });
+
+    // const dansuiAreaLayer = L.geoPackageFeatureLayer([], {
+    //     geoPackage: gpkg,
+    //     layerName: 'dansui_area',
+    // });
+
+    // const poplationLayer = L.geoPackageFeatureLayer([], {
+    //     geoPackage: gpkg,
+    //     layerName: '500m_mesh_2018_43',
+    //     style: (geoJsonFeature) => {
+    //         const selectColor = (population) => {
+    //             if (population < 770) {
+    //                 return '#fef0d9';
+    //             } else if (population < 1540) {
+    //                 return '#fdcc8a';
+    //             } else if (population < 2310) {
+    //                 return '#fc8d59';
+    //             } else if (population < 3080) {
+    //                 return '#e34a33';
+    //             } else {
+    //                 return '#b30000';
+    //             }
+    //         }
+
+    //         const population = geoJsonFeature.properties.ptn_2020;
+    //         return {
+    //             color: '#ffffff',
+    //             weight: 1,
+    //             fillColor: selectColor(population),
+    //             fillOpacity: 0.5,
+    //         }
+    //     }
+    // });
+
+    // const demLayer = L.geoPackageFeatureLayer([], {
+    //     geoPackage: gpkg,
+    //     layerName: 'dem',
+    //     style: () => {
+    //         return {
+    //             opacity: 0.5
+    //         }
+    //     }
+    // });
 }
 
 const toggleControl = (show) => {
