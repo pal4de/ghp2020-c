@@ -35,75 +35,95 @@ const ShokasenIcon = new IconTemplate({iconUrl: './icons/shokasen.png'});
 const KyusuishaIcon = new IconTemplate({iconUrl: './icons/kyusuisha.png'});
 const HinanjoIcon = new IconTemplate({iconUrl: './icons/hinanjo.png'});
 
-const hinanjyoLayer = L.geoPackageFeatureLayer([], {
-    geoPackageUrl: './data/db.gpkg',
-    layerName: 'hinanjyo',
-    pointToLayer: (feature, layer) => {
-        console.log(feature);
-        const marker = L.marker(layer, {icon: HinanjoIcon});
-        const popupContent = `
-            <h6>名称</h6>
-            <p>${feature.properties.p20_002}</p>
-            <h6>住所</h6>
-            <p>${feature.properties.p20_003}</p>
-        `;
-        marker.bindPopup(popupContent);
-        return marker;
-    }
-});
+const readAsArrayBuffer = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsArrayBuffer(file);
+    });
+}
 
-const dansuiAreaLayer = L.geoPackageFeatureLayer([], {
-    geoPackageUrl: './data/db.gpkg',
-    layerName: 'dansui_area',
-});
+const loadGeoPackage = async (file) => {
+    const arrayBuffer = await readAsArrayBuffer(file);
+    const uint8Array = new Uint8Array(arrayBuffer);
+    const gp = await geopackage.GeoPackageAPI.open(uint8Array);
+    console.log(gp);
+    return gp;
+}
 
-const poplationLayer = L.geoPackageFeatureLayer([], {
-    geoPackageUrl: './data/db.gpkg',
-    layerName: '500m_mesh_2018_43',
-    style: (geoJsonFeature) => {
-        const selectColor = (population) => {
-            if (population < 770) {
-                return '#fef0d9';
-            } else if (population < 1540) {
-                return '#fdcc8a';
-            } else if (population < 2310) {
-                return '#fc8d59';
-            } else if (population < 3080) {
-                return '#e34a33';
-            } else {
-                return '#b30000';
+const handleGeoPackage = async (file) => {
+    const gpkg = await loadGeoPackage(file);
+
+    const hinanjyoLayer = L.geoPackageFeatureLayer([], {
+        geoPackage: gpkg,
+        layerName: 'hinanjyo',
+        pointToLayer: (feature, layer) => {
+            const marker = L.marker(layer, {icon: HinanjoIcon});
+            const popupContent = `
+                <h6>名称</h6>
+                <p>${feature.properties.p20_002}</p>
+                <h6>住所</h6>
+                <p>${feature.properties.p20_003}</p>
+            `;
+            marker.bindPopup(popupContent);
+            return marker;
+        }
+    });
+
+    const dansuiAreaLayer = L.geoPackageFeatureLayer([], {
+        geoPackage: gpkg,
+        layerName: 'dansui_area',
+    });
+
+    const poplationLayer = L.geoPackageFeatureLayer([], {
+        geoPackage: gpkg,
+        layerName: '500m_mesh_2018_43',
+        style: (geoJsonFeature) => {
+            const selectColor = (population) => {
+                if (population < 770) {
+                    return '#fef0d9';
+                } else if (population < 1540) {
+                    return '#fdcc8a';
+                } else if (population < 2310) {
+                    return '#fc8d59';
+                } else if (population < 3080) {
+                    return '#e34a33';
+                } else {
+                    return '#b30000';
+                }
+            }
+
+            const population = geoJsonFeature.properties.ptn_2020;
+            return {
+                color: '#ffffff',
+                weight: 1,
+                fillColor: selectColor(population),
+                fillOpacity: 0.5,
             }
         }
+    });
 
-        const population = geoJsonFeature.properties.ptn_2020;
-        return {
-            color: '#ffffff',
-            weight: 1,
-            fillColor: selectColor(population),
-            fillOpacity: 0.5,
+    const demLayer = L.geoPackageFeatureLayer([], {
+        geoPackage: gpkg,
+        layerName: 'dem',
+        style: () => {
+            return {
+                opacity: 0.5
+            }
         }
-    }
-});
+    });
 
-const demLayer = L.geoPackageFeatureLayer([], {
-    geoPackageUrl: './data/db.gpkg',
-    layerName: 'dem',
-    style: () => {
-        return {
-            opacity: 0.5
-        }
+    const optionalLayersList = {
+        '避難所': hinanjyoLayer,
+        '断水エリア': dansuiAreaLayer,
+        '人口': poplationLayer,
+        '標高': demLayer,
+    };
+    L.control.layers(null, optionalLayersList).addTo(map);
+    for (const optinalLayer of Object.values(optionalLayersList)) {
+        optinalLayer.addTo(map);
     }
-});
-
-const optionalLayersList = {
-    '避難所': hinanjyoLayer,
-    '断水エリア': dansuiAreaLayer,
-    '人口': poplationLayer,
-    '標高': demLayer,
-};
-L.control.layers(null, optionalLayersList).addTo(map);
-for (const optinalLayer of Object.values(optionalLayersList)) {
-    optinalLayer.addTo(map);
 }
 
 const toggleControl = (show) => {

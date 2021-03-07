@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@3.0.3/dist/leaflet-geopackage.min.js"></script>
+    <script src="https://unpkg.com/@ngageoint/geopackage@3.0.9/dist/geopackage-browser.js"></script>
+    <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@3.0.3/dist/leaflet-geopackage.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;900&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -22,7 +23,7 @@
         <section>
             <form>
                 <label for="gpkg-selector">GeoPackageファイル</label>
-                <input type="file" accept=".gpkg" name="gpkg-selector" id="gpkg-selector" onchange="loadGeoPackage(this.files[0])">
+                <input type="file" accept=".gpkg" name="gpkg-selector" id="gpkg-selector" onchange="handleGeoPackage(this.files[0])">
                 <!-- <label for="watarstation-count">給水所の数</label>
                 <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->
             </form>
