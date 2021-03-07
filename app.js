@@ -1,4 +1,4 @@
-// source: https://day-journal.com/memo/try-054/
+// original: https://day-journal.com/memo/try-054/
 
 const basicMap = new L.tileLayer(
     'https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png',
@@ -6,19 +6,19 @@ const basicMap = new L.tileLayer(
         attribution: `&copy; <a href="www.openstreetmap.org" target="_blank">OpenStreetMap</a> contributors`
     }
 );
-const map = L.map('map', {
+const mapOption = {
     center: [32.805100137858226, 130.77487836209724],
     zoom: 14,
     zoomControl: true,
     layers: [basicMap],
-});
+}
+const map = L.map('map', mapOption);
 
-L.control
-    .scale({
-        imperial: false,
-        maxWidth: 300,
-    })
-    .addTo(map);
+const scaleControlOption = {
+    imperial: false,
+    maxWidth: 300,
+};
+L.control.scale(scaleControlOption).addTo(map);
 
 const IconTemplate = L.Icon.extend({
     options: {
@@ -36,7 +36,7 @@ const HinanjoIcon = new IconTemplate({iconUrl: './icons/hinanjo.png'});
 const hinanjyoLayer = L.geoPackageFeatureLayer([], {
     geoPackageUrl: './data/db.gpkg',
     layerName: 'hinanjyo',
-    pointToLayer: function (feature, layer) {
+    pointToLayer: (feature, layer) => {
         return L.marker(layer, {icon: HinanjoIcon});
     }
 });
@@ -84,13 +84,10 @@ const demLayer = L.geoPackageFeatureLayer([], {
     }
 });
 
-//背景レイヤ
-const optionLayersList = {
+const optionalLayersList = {
     '避難所': hinanjyoLayer,
     '断水エリア': dansuiAreaLayer,
     '人口': poplationLayer,
     '標高': demLayer,
 };
-
-//レイヤ設定
-L.control.layers(null, optionLayersList).addTo(map);
+L.control.layers(null, optionalLayersList).addTo(map);
