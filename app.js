@@ -13,10 +13,12 @@ const mapOption = {
     layers: [basicMap],
 }
 const map = L.map('map', mapOption);
+map.zoomControl.setPosition('bottomleft');
 
 const scaleControlOption = {
     imperial: false,
     maxWidth: 300,
+    position: 'bottomright',
 };
 L.control.scale(scaleControlOption).addTo(map);
 
@@ -91,3 +93,6 @@ const optionalLayersList = {
     '標高': demLayer,
 };
 L.control.layers(null, optionalLayersList).addTo(map);
+for (const optinalLayer of Object.values(optionalLayersList)) {
+    optinalLayer.addTo(map);
+}
