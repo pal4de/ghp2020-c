@@ -7,8 +7,8 @@ const basicMap = new L.tileLayer(
     }
 );
 const mapOption = {
-    center: [32.805100137858226, 130.77487836209724],
-    zoom: 14,
+    center: [37.45741810262938, 137.54882812500003],
+    zoom: 5,
     zoomControl: true,
     layers: [basicMap],
 }
@@ -128,6 +128,7 @@ const handleGeoPackage = async (fileList) => {
     L.control.layers(null, optionalLayersList).addTo(map);
     for (const optinalLayer of Object.values(optionalLayersList)) {
         optinalLayer.addTo(map);
+        if (optinalLayer.getBounds) map.fitBounds(optinalLayer.getBounds());
     }
 }
 
