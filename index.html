@@ -11,13 +11,21 @@
     <title>ミズリーチ</title>
 </head>
 <body>
+    <div id="control">
+        <section>
+            <h1>ミズリーチ</h1>
+            <div class="subtext">断水エリアとオープンデータ(人口、標高、避難所の位置)を組み合わせて可視化し、給水所開設の優先順位の決定を支援するシステム</div>
+        </section>
+        <section>
+            <form>
+                <!-- <label for="watarstation-count">給水所の数</label>
+                <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->
+                <label for="gpkg-selector">GeoPackageファイル</label>
+                <input type="file" accept=".gpkg" name="gpkg-selector" id="gpkg-selector" onchange="loadGeoPackage(this.files)">
+            </form>
+        </section>
+    </div>
     <div id="map"></div>
-    <form id="control">
-        <!-- <label for="watarstation-count">給水所の数</label>
-        <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->
-        <label for="gpkg-selector">GeoPackageファイル</label>
-        <input type="file" name="gpkg-selector" id="gpkg-selector" onchange="loadGeoPackage(this.files)">
-    </form>
     <script src="app.js"></script>
 </body>
 </html>
