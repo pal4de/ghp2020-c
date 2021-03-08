@@ -10,6 +10,19 @@ html, body {
     font-family: 'Noto Sans JP', sans-serif;
 }
 
+h6 {
+    margin: 0;
+    margin-bottom: 5px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+}
+
+p, .leaflet-popup-content p {
+    margin: 0;
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
 .material-icons {
     user-select: none;
 }
@@ -27,18 +40,6 @@ html, body {
     #map {
         width: 100%;
     }
-}
-
-#map h6 {
-    margin: 0;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 12px;
-}
-
-#map p {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 15px;
 }
 
 .leaflet-popup-content {
@@ -87,14 +88,6 @@ html, body {
     color: #aaa;
     font-size: 80%;
     font-weight: 500;
-}
-
-#control label {
-    display: block;
-    width: 100%;
-    text-align: left;
-    font-weight: 500;
-    font-size: 15px;
 }
 
 #gpkg-selector-container {

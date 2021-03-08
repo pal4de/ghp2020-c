@@ -21,20 +21,22 @@
             <div class="subtext">断水エリアとオープンデータ(人口、標高、避難所の位置)を組み合わせて可視化し、給水所開設の優先順位の決定を支援するシステム</div>
         </section>
         <section>
-            <label for="gpkg-selector">GeoPackageファイル</label>
+            <h6>GeoPackageファイル</h6>
             <div id="gpkg-selector-container">
                 <input type="file" accept=".gpkg" name="gpkg-selector" id="gpkg-selector" onchange="handleGeoPackage(this.files)">
                 <div id="gpkg-selector-loading-text">読み込み中...</div>
             </div>
-            <!-- <label for="watarstation-count">給水所の数</label>
+            <!-- <h6 for="watarstation-count">給水所の数</h6>
             <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->
         </section>
         <section id="layer-control-container">
             <template id="layer-control-template">
                 <div class="layer-control-unit" data-layer-name data-layer-number>
-                    <label for="layer-visibility-"></label>
-                    <input type="checkbox" name="layer-visibility-" class="layer-visibility" onchange="toggleLayer(this.parentElement, this.value)" checked>
-                    <select name="layer-style-"></select>
+                    <h6 for="layer-visibility-"></h6>
+                    <p>
+                        <input type="checkbox" name="layer-visibility-" class="layer-visibility" onchange="toggleLayer(this.parentElement, this.value)" checked>
+                        <select name="layer-style-"></select>
+                    </p>
                 </div>
             </template>
         </section>

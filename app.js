@@ -87,7 +87,7 @@ const handleGeoPackage = async (fileList) => {
                 targetElem[targetProp] += layerNumber
             }
         }
-        layerControl.querySelector('label').textContent = tableName;
+        layerControl.querySelector('h6').textContent = tableName;
         layerControl.querySelector('[data-layer-name]').dataset.layerName = tableName;
         layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layerNumber;
         layerControlContainer.appendChild(layerControl);
