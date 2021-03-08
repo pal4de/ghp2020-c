@@ -52,6 +52,7 @@ html, body {
     position: absolute;
     box-sizing: border-box;
     z-index: 1;
+    overflow-y: auto;
     height: 100%;
     width: 400px;
     padding: 30px 15px;
@@ -124,6 +125,7 @@ html, body {
     padding: 7px;
     font-size: 200%;
     background-color: white;
+    border: none;
     border-radius: 5px;
     box-shadow: 0 0 0 2px rgba(0 0 0 / 20%);
     color: rgba(0, 0, 0, 0.7);

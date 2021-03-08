@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- <script src="https://unpkg.com/leaflet.label@0.2.4/dist/leaflet.label.js"></script> -->
     <script src="https://unpkg.com/@ngageoint/geopackage@3.0.9/dist/geopackage-browser.js"></script>
     <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@3.0.3/dist/leaflet-geopackage.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -32,7 +33,7 @@
         <section id="layer-control-container">
             <template id="layer-control-template">
                 <div class="layer-control-unit" data-layer-name data-layer-number>
-                    <h6 for="layer-visibility-"></h6>
+                    <h6></h6>
                     <p>
                         <input type="checkbox" name="layer-visibility-" class="layer-visibility" onchange="toggleLayer(this.parentElement, this.value)" checked>
                         <select name="layer-style-"></select>

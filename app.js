@@ -9,15 +9,18 @@ const basicMap = new L.tileLayer(
 const mapOption = {
     center: [37.45741810262938, 137.54882812500003],
     zoom: 5,
-    zoomControl: true,
+    zoomControl: false,
     layers: [basicMap],
 }
 const map = L.map('map', mapOption);
-map.zoomControl.setPosition('bottomleft');
+
+const zoomControlOption = {
+    position: 'bottomleft',
+}
+L.control.zoom(zoomControlOption).addTo(map);
 
 const scaleControlOption = {
     imperial: false,
-    maxWidth: 300,
     position: 'bottomright',
 };
 L.control.scale(scaleControlOption).addTo(map);
@@ -69,6 +72,10 @@ const handleGeoPackage = async (fileList) => {
             layerName: tableName,
             pointToLayer: (feature, layer) => {
                 const marker = L.marker(layer, {icon: HinanjoIcon});
+                // marker.bindLabel(feature.properties.p20_002, {
+                //     noHide: true,
+                //     direction: 'auto'
+                // });
                 return marker;
             },
             onEachFeature: (feature, layer) => {
