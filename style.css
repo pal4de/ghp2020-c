@@ -10,14 +10,14 @@ html, body {
     font-family: 'Noto Sans JP', sans-serif;
 }
 
-h6 {
+#app h6 {
     margin: 0;
     margin-bottom: 5px;
     font-family: 'Noto Sans JP', sans-serif;
     font-size: 12px;
 }
 
-p, .leaflet-popup-content p {
+#app p {
     margin: 0;
     margin-bottom: 15px;
     font-size: 15px;
