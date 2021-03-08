@@ -47,20 +47,22 @@ const readAsArrayBuffer = (file) => {
 const loadGeoPackage = async (file) => {
     const arrayBuffer = await readAsArrayBuffer(file);
     const uint8Array = new Uint8Array(arrayBuffer);
-    const gp = await geopackage.GeoPackageAPI.open(uint8Array);
-    console.log(gp);
-    return gp;
+    const gpkg = await geopackage.GeoPackageAPI.open(uint8Array);
+    return gpkg;
 }
 
+const layerList = {};
 const handleGeoPackage = async (fileList) => {
     if (fileList.length == 0) return;
     const file = fileList[0];
 
-    const gpkgSelectorWrapper = document.querySelector('#gpkg-selector-wrapper');
-    gpkgSelectorWrapper.classList.add('gpkg-loading');
+    const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
+    gpkgSelectorContainer.classList.add('gpkg-loading');
     const gpkg = await loadGeoPackage(file);
-    gpkgSelectorWrapper.classList.remove('gpkg-loading');
+    gpkgSelectorContainer.classList.remove('gpkg-loading');
 
+    const layerControlTemplate = document.querySelector('#layer-control-template');
+    const layerControlContainer = document.querySelector('#layer-control-container');
     for (const tableName of gpkg.getFeatureTables()) {
         const layer = L.geoPackageFeatureLayer([], {
             geoPackage: gpkg,
@@ -78,7 +80,20 @@ const handleGeoPackage = async (fileList) => {
             }
         });
 
+        const layerControl = layerControlTemplate.content.cloneNode(true);
+        const layerNumber = layerControlContainer.childElementCount;
+        for (let [targetProp, targetAttr] of [['htmlFor', 'for'], ['name', 'name']]) {
+            for (const targetElem of layerControl.querySelectorAll(`[${targetAttr}]`)) {
+                targetElem[targetProp] += layerNumber
+            }
+        }
+        layerControl.querySelector('label').textContent = tableName;
+        layerControl.querySelector('[data-layer-name]').dataset.layerName = tableName;
+        layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layerNumber;
+        layerControlContainer.appendChild(layerControl);
+
         layer.addTo(map);
+        layerList[layerNumber] = (layer);
         if (layer.getBounds) map.fitBounds(layer.getBounds());
     }
 
@@ -148,5 +163,17 @@ const toggleControl = (show) => {
         body.classList.toggle('control-opened');
     } else {
         body.classList[show ? 'add' : 'remove']('control-opened');
+    }
+}
+
+const toggleLayer = (layerControlUnit) => {
+    const layerNumber = layerControlUnit.dataset.layerNumber;
+    const layer = layerList[layerNumber];
+
+    const isVisible = layerControlUnit.querySelector('.layer-visibility').checked;
+    if (isVisible) {
+        map.addLayer(layer);
+    } else {
+        map.removeLayer(layer);
     }
 }

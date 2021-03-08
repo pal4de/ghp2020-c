@@ -97,7 +97,7 @@ html, body {
     font-size: 15px;
 }
 
-#gpkg-selector-wrapper {
+#gpkg-selector-container {
     box-sizing: border-box;
     border: #ddd 3px solid;
     border-radius: 5px;
