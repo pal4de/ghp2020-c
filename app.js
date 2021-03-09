@@ -89,11 +89,6 @@ const handleGeoPackage = async (fileList) => {
 
         const layerControl = layerControlTemplate.content.cloneNode(true);
         const layerNumber = layerControlContainer.childElementCount + 1;
-        for (let [targetProp, targetAttr] of [['htmlFor', 'for'], ['name', 'name']]) {
-            for (const targetElem of layerControl.querySelectorAll(`[${targetAttr}]`)) {
-                targetElem[targetProp] += layerNumber
-            }
-        }
         layerControl.querySelector('h6').textContent = tableName;
         layerControl.querySelector('[data-layer-name]').dataset.layerName = tableName;
         layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layerNumber;
