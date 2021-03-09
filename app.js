@@ -62,7 +62,7 @@ const arrayLayers = () => {
 
 const layerList = {};
 const handleGeoPackage = async (fileList) => {
-    if (fileList.length == 0) return;
+    if (fileList.length === 0) return;
     const file = fileList[0];
 
     const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
@@ -73,25 +73,70 @@ const handleGeoPackage = async (fileList) => {
     const layerControlTemplate = document.querySelector('#layer-control-template');
     const layerControlContainer = document.querySelector('#layer-control-container');
     for (const tableName of gpkg.getFeatureTables()) {
-        const layer = L.geoPackageFeatureLayer([], {
+        const layerOption = {
             geoPackage: gpkg,
             layerName: tableName,
-            pointToLayer: (feature, layer) => {
+        };
+        const fieldNameDictionary = {};
+
+        if (tableName === '500m_mesh_2018_43') { // 人口
+            layerOption.style = (geoJsonFeature) => {
+                const selectColor = (population) => {
+                    if (population < 770) {
+                        return '#fef0d9';
+                    } else if (population < 1540) {
+                        return '#fdcc8a';
+                    } else if (population < 2310) {
+                        return '#fc8d59';
+                    } else if (population < 3080) {
+                        return '#e34a33';
+                    } else {
+                        return '#b30000';
+                    }
+                }
+
+                const population = geoJsonFeature.properties.ptn_2020;
+                return {
+                    color: '#ffffff',
+                    weight: 1,
+                    fillColor: selectColor(population),
+                    fillOpacity: 0.5,
+                }
+            }
+            fieldNameDictionary['ptn_2020'] = '人口';
+        } else if (tableName === 'dansui_area' || tableName === 'dansui_area_2' || tableName === 'dansui_area_3') {
+        } else if (tableName === 'hinanjyo') {
+            layerOption.pointToLayer = (feature, layer) => {
                 const marker = L.marker(layer, {icon: HinanjoIcon});
                 // marker.bindLabel(feature.properties.p20_002, {
                 //     noHide: true,
                 //     direction: 'auto'
                 // });
                 return marker;
-            },
-            onEachFeature: (feature, layer) => {
-                let popupContent = '';
-                for (const [key, value] of Object.entries(feature.properties)) {
-                    popupContent += `<h6>${key}</h6><p>${value}</p>`
+            };
+            fieldNameDictionary['p20_002'] = '名称';
+            fieldNameDictionary['p20_003'] = '住所';
+        } else if (tableName === 'dem') {
+            layerOption.style = () => ({
+                opacity: 0.5
+            });
+        } else if (tableName === 'qgis:voronoipolygons_1:kyusui_voronoi') {
+        }
+
+        layerOption.onEachFeature = (feature, layer) => {
+            let knownFieldContent = '';
+            let unknownFieldContent = '';
+            for (const [key, value] of Object.entries(feature.properties)) {
+                if (key in fieldNameDictionary) {
+                    const fieldName = `${fieldNameDictionary[key]} <span class="subtext">${key}</span>`;
+                    knownFieldContent += `<h6>${fieldName}</h6><p>${value}</p>`;
+                } else {
+                    unknownFieldContent += `<span class="subtext"><h6>${key}</h6><p>${value}</p></span>`
                 }
-                layer.bindPopup(popupContent);
             }
-        });
+            layer.bindPopup(knownFieldContent + unknownFieldContent);
+        }
+        const layer = L.geoPackageFeatureLayer([], layerOption);
 
         const layerControl = layerControlTemplate.content.cloneNode(true);
         const layerNumber = layerControlContainer.childElementCount + 1;
@@ -102,73 +147,17 @@ const handleGeoPackage = async (fileList) => {
         layerControlContainer.appendChild(layerControl);
 
         layer.addTo(map);
-        layerList[layerNumber] = (layer);
-        if (layer.getBounds) map.fitBounds(layer.getBounds());
+        layerList[layerNumber] = layer;
     }
 
-    // const hinanjyoLayer = L.geoPackageFeatureLayer([], {
-    //     geoPackage: gpkg,
-    //     layerName: 'hinanjyo',
-    //     pointToLayer: (feature, layer) => {
-    //         const marker = L.marker(layer, {icon: HinanjoIcon});
-    //         const popupContent = `
-    //             <h6>名称</h6>
-    //             <p>${feature.properties.p20_002}</p>
-    //             <h6>住所</h6>
-    //             <p>${feature.properties.p20_003}</p>
-    //         `;
-    //         marker.bindPopup(popupContent);
-    //         return marker;
-    //     }
-    // });
-
-    // const dansuiAreaLayer = L.geoPackageFeatureLayer([], {
-    //     geoPackage: gpkg,
-    //     layerName: 'dansui_area',
-    // });
-
-    // const poplationLayer = L.geoPackageFeatureLayer([], {
-    //     geoPackage: gpkg,
-    //     layerName: '500m_mesh_2018_43',
-    //     style: (geoJsonFeature) => {
-    //         const selectColor = (population) => {
-    //             if (population < 770) {
-    //                 return '#fef0d9';
-    //             } else if (population < 1540) {
-    //                 return '#fdcc8a';
-    //             } else if (population < 2310) {
-    //                 return '#fc8d59';
-    //             } else if (population < 3080) {
-    //                 return '#e34a33';
-    //             } else {
-    //                 return '#b30000';
-    //             }
-    //         }
-
-    //         const population = geoJsonFeature.properties.ptn_2020;
-    //         return {
-    //             color: '#ffffff',
-    //             weight: 1,
-    //             fillColor: selectColor(population),
-    //             fillOpacity: 0.5,
-    //         }
-    //     }
-    // });
-
-    // const demLayer = L.geoPackageFeatureLayer([], {
-    //     geoPackage: gpkg,
-    //     layerName: 'dem',
-    //     style: () => {
-    //         return {
-    //             opacity: 0.5
-    //         }
-    //     }
-    // });
+    const allLayersGroup = L.featureGroup(Object.values(layerList));
+    map.fitBounds(allLayersGroup.getBounds());
+    arrayLayers();
 }
 
 const toggleControl = (show) => {
     const body = document.querySelector('body');
-    if (show == undefined) {
+    if (show === undefined) {
         body.classList.toggle('control-opened');
     } else {
         if (show) {
