@@ -16,9 +16,13 @@ html, body {
 
 #app h6 {
     margin: 0;
+    margin-top: 15px;
     margin-bottom: 5px;
     font-family: 'Noto Sans JP', sans-serif;
     font-size: 12px;
+}
+#app h6:first-child {
+    margin-top: 0;
 }
 
 #app p {
@@ -95,7 +99,6 @@ html, body {
     box-sizing: border-box;
     border: #ddd 3px solid;
     border-radius: 5px;
-    margin-bottom: 15px;
 }
 
 #gpkg-selector {
