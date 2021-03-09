@@ -162,6 +162,7 @@ const handleGeoPackage = async (fileList) => {
         layerControlContainer.appendChild(layerControl);
 
         layer.addTo(map);
+        layer.onAdd = (map) => L.GeoJSON.prototype.onAdd.call(layer, map); // 同じデータが重複して登録されることを防止
         layerList.push(layer);
     }
 
