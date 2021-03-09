@@ -26,6 +26,7 @@
             <div id="gpkg-selector-container">
                 <input type="file" accept=".gpkg" id="gpkg-selector" onchange="handleGeoPackage(this.files)">
                 <div id="gpkg-selector-loading-text">読み込み中...</div>
+                <button id="gpkg-load-from-server-button" onclick="loadGpkgfromServer()">サーバーから読み込む</button>
             </div>
             <!-- <h6 for="watarstation-count">給水所の数</h6>
             <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->

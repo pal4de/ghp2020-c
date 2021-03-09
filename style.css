@@ -1,5 +1,5 @@
 :root {
-    --accent-color: #2F8B9F;
+    --accent-color: #2f8B9f;
     --control-transition: 0.5s;
 }
 
@@ -29,6 +29,10 @@ html, body {
     margin: 0;
     margin-bottom: 15px;
     font-size: 15px;
+}
+
+#app input, #app button, #app select {
+    cursor: pointer;
 }
 
 #map {
@@ -97,12 +101,21 @@ html, body {
 
 #gpkg-selector-container {
     box-sizing: border-box;
+    width: 100%;
     border: #ddd 3px solid;
     border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+#gpkg-selector:hover,
+#gpkg-load-from-server-button:hover {
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
 #gpkg-selector {
+    box-sizing: border-box;
     display: inline-block;
+    width: 100%;
     padding: 10px;
 }
 
@@ -119,6 +132,19 @@ html, body {
 
 .gpkg-loading #gpkg-selector-loading-text {
     display: inline-block;
+}
+
+#gpkg-load-from-server-button {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    border-top: #ddd 3px solid;
+    color: #aaa
+}
+
+.gpkg-loading #gpkg-load-from-server-button {
+    display: none;
 }
 
 #control-toggler {

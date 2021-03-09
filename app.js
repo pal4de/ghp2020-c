@@ -183,3 +183,20 @@ const toggleLayer = (layerControlUnit) => {
         map.removeLayer(layer);
     }
 }
+
+const loadGpkgfromServer = async () => {
+    const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
+    const gpkgSelector = document.querySelector('#gpkg-selector');
+    gpkgSelectorContainer.classList.add('gpkg-loading');
+
+    const response = await fetch('/data/db.gpkg');
+    const blob = await response.blob();
+    const file = new File([blob], 'db.gpkg')
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    gpkgSelector.files = dataTransfer.files;
+    gpkgSelectorContainer.classList.remove('gpkg-loading');
+
+    gpkgSelector.onchange();
+}
