@@ -60,7 +60,7 @@ const arrayLayers = () => {
     }
 }
 
-const layerList = {};
+const layerList = [];
 const handleGeoPackage = async (fileList) => {
     if (fileList.length === 0) return;
     const file = fileList[0];
@@ -147,7 +147,7 @@ const handleGeoPackage = async (fileList) => {
         const layer = L.geoPackageFeatureLayer([], layerOption);
 
         const layerControl = layerControlTemplate.content.cloneNode(true);
-        const layerNumber = layerControlContainer.childElementCount + 1;
+        const layerNumber = layerControlContainer.childElementCount;
 
         if (layerDisplayName) {
             layerControl.querySelector('h6').prepend(layerDisplayName);
@@ -162,10 +162,10 @@ const handleGeoPackage = async (fileList) => {
         layerControlContainer.appendChild(layerControl);
 
         layer.addTo(map);
-        layerList[layerNumber] = layer;
+        layerList.push(layer);
     }
 
-    const allLayersGroup = L.featureGroup(Object.values(layerList));
+    const allLayersGroup = L.featureGroup(layerList);
     map.fitBounds(allLayersGroup.getBounds());
     arrayLayers();
 }
