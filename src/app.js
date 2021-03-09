@@ -1,4 +1,7 @@
-// original: https://day-journal.com/memo/try-054/
+import L from 'leaflet';
+// import 'leaflet/dist/leaflet.css';
+// import geopackage from '@ngageoint/geopackage';
+// import '@ngageoint/leaflet-geopackage';
 
 const basicMap = new L.tileLayer(
     'https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png',
