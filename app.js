@@ -98,6 +98,7 @@ const handleGeoPackage = async (fileList) => {
         layerControl.querySelector('h6').textContent = tableName;
         layerControl.querySelector('[data-layer-name]').dataset.layerName = tableName;
         layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layerNumber;
+        layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layerNumber, e.target.checked);
         layerControlContainer.appendChild(layerControl);
 
         layer.addTo(map);
@@ -178,16 +179,14 @@ const toggleControl = (show) => {
     }
 }
 
-const toggleLayer = (layerControlUnit) => {
-    const layerNumber = layerControlUnit.dataset.layerNumber;
+const toggleLayerVisibility = (layerNumber, visible) => {
     const layer = layerList[layerNumber];
-
-    const isVisible = layerControlUnit.querySelector('.layer-visibility').checked;
-    if (isVisible) {
-        map.addLayer(layer);
+    if (visible) {
+        layer.addTo(map);
     } else {
-        map.removeLayer(layer);
+        layer.remove();
     }
+    arrayLayers();
 }
 
 const loadGpkgfromServer = async () => {
