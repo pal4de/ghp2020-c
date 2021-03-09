@@ -25,6 +25,33 @@ const scaleControlOption = {
 };
 L.control.scale(scaleControlOption).addTo(map);
 
+L.Control.ControlToggler = L.Control.extend({
+    onAdd: (map) => {
+        let button = L.DomUtil.create('button', 'custom-panel leaflet-bar material-icons');
+        button.id = 'control-toggler';
+        button.innerText = 'menu';
+        button.onclick = L.Control.ControlToggler.prototype.toggle;
+        return button;
+    },
+    toggle: (show) => {
+        const body = document.querySelector('body');
+        if (show === undefined) {
+            body.classList.toggle('control-opened');
+        } else {
+            if (show) {
+                body.classList.add('control-opened');
+            } else {
+                body.classList.remove('control-opened');
+            }
+        }
+    }
+});
+const controlTogglerOption = {
+    position: 'topleft',
+};
+const controlToggler = new L.Control.ControlToggler(controlTogglerOption);
+controlToggler.addTo(map);
+
 const IconTemplate = L.Icon.extend({
     options: {
         iconSize: [15, 15],
@@ -169,19 +196,6 @@ const handleGeoPackage = async (fileList) => {
     const allLayersGroup = L.featureGroup(layerList);
     map.fitBounds(allLayersGroup.getBounds());
     arrayLayers();
-}
-
-const toggleControl = (show) => {
-    const body = document.querySelector('body');
-    if (show === undefined) {
-        body.classList.toggle('control-opened');
-    } else {
-        if (show) {
-            body.classList.add('control-opened');
-        } else {
-            body.classList.remove('control-opened');
-        }
-    }
 }
 
 const toggleLayerVisibility = (layerNumber, visible) => {
