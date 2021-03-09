@@ -79,7 +79,9 @@ const handleGeoPackage = async (fileList) => {
         };
         const fieldNameDictionary = {};
 
-        if (tableName === '500m_mesh_2018_43') { // 人口
+        let layerDisplayName = '';
+        if (tableName === '500m_mesh_2018_43') {
+            layerDisplayName = '人口';
             layerOption.style = (geoJsonFeature) => {
                 const selectColor = (population) => {
                     if (population < 770) {
@@ -104,8 +106,10 @@ const handleGeoPackage = async (fileList) => {
                 }
             }
             fieldNameDictionary['ptn_2020'] = '人口';
-        } else if (tableName === 'dansui_area' || tableName === 'dansui_area_2' || tableName === 'dansui_area_3') {
+        } else if (tableName === 'dansui_area' || tableName === 'dansui_area2' || tableName === 'dansui_area3') {
+            layerDisplayName = '断水エリア';
         } else if (tableName === 'hinanjyo') {
+            layerDisplayName = '避難所';
             layerOption.pointToLayer = (feature, layer) => {
                 const marker = L.marker(layer, {icon: HinanjoIcon});
                 // marker.bindLabel(feature.properties.p20_002, {
@@ -117,10 +121,14 @@ const handleGeoPackage = async (fileList) => {
             fieldNameDictionary['p20_002'] = '名称';
             fieldNameDictionary['p20_003'] = '住所';
         } else if (tableName === 'dem') {
+            layerDisplayName = '標高';
             layerOption.style = () => ({
                 opacity: 0.5
             });
         } else if (tableName === 'qgis:voronoipolygons_1:kyusui_voronoi') {
+            layerDisplayName = 'ボロノイ分析結果';
+        } else if (tableName === 'native:joinattributestable_1:target_kyusui') {
+            layerDisplayName = '給水所配置候補地点';
         }
 
         layerOption.onEachFeature = (feature, layer) => {
@@ -128,7 +136,7 @@ const handleGeoPackage = async (fileList) => {
             let unknownFieldContent = '';
             for (const [key, value] of Object.entries(feature.properties)) {
                 if (key in fieldNameDictionary) {
-                    const fieldName = `${fieldNameDictionary[key]} <span class="subtext">${key}</span>`;
+                    const fieldName = `${fieldNameDictionary[key]}<span class="subtext">${key}</span>`;
                     knownFieldContent += `<h6>${fieldName}</h6><p>${value}</p>`;
                 } else {
                     unknownFieldContent += `<span class="subtext"><h6>${key}</h6><p>${value}</p></span>`
@@ -140,8 +148,15 @@ const handleGeoPackage = async (fileList) => {
 
         const layerControl = layerControlTemplate.content.cloneNode(true);
         const layerNumber = layerControlContainer.childElementCount + 1;
-        layerControl.querySelector('h6').textContent = tableName;
-        layerControl.querySelector('[data-layer-name]').dataset.layerName = tableName;
+
+        if (layerDisplayName) {
+            layerControl.querySelector('h6').prepend(layerDisplayName);
+            layerControl.querySelector('h6 .subtext').append(tableName);
+        } else {
+            layerControl.querySelector('h6').prepend(tableName);
+        }
+
+        layerControl.querySelector('[data-table-name]').dataset.tableName = tableName;
         layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layerNumber;
         layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layerNumber, e.target.checked);
         layerControlContainer.appendChild(layerControl);

@@ -15,9 +15,10 @@ html, body {
 }
 
 .subtext {
+    margin: 0 0.5em;
     color: #aaa;
-    font-size: 80%;
-    font-weight: 500;
+    font-size: 60%;
+    font-weight: lighter;
 }
 
 #app h6 {
@@ -98,6 +99,12 @@ html, body {
     margin-bottom: 5px;
     font-size: 200%;
     font-weight: 900;
+}
+
+.description {
+    color: #aaa;
+    font-size: 80%;
+    font-weight: 500;
 }
 
 #gpkg-selector-container {
