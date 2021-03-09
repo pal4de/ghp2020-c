@@ -54,6 +54,12 @@ const loadGeoPackage = async (file) => {
     return gpkg;
 }
 
+const arrayLayers = () => {
+    for (const layer of Object.values(layerList)) {
+        layer.bringToBack();
+    }
+}
+
 const layerList = {};
 const handleGeoPackage = async (fileList) => {
     if (fileList.length == 0) return;
