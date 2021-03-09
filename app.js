@@ -88,7 +88,7 @@ const handleGeoPackage = async (fileList) => {
         });
 
         const layerControl = layerControlTemplate.content.cloneNode(true);
-        const layerNumber = layerControlContainer.childElementCount;
+        const layerNumber = layerControlContainer.childElementCount + 1;
         for (let [targetProp, targetAttr] of [['htmlFor', 'for'], ['name', 'name']]) {
             for (const targetElem of layerControl.querySelectorAll(`[${targetAttr}]`)) {
                 targetElem[targetProp] += layerNumber
@@ -169,7 +169,11 @@ const toggleControl = (show) => {
     if (show == undefined) {
         body.classList.toggle('control-opened');
     } else {
-        body.classList[show ? 'add' : 'remove']('control-opened');
+        if (show) {
+            body.classList.add('control-opened');
+        } else {
+            body.classList.remove('control-opened');
+        }
     }
 }
 
