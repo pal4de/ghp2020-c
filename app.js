@@ -165,10 +165,10 @@ const handleGeoPackage = async (fileList) => {
             let unknownFieldContent = '';
             for (const [key, value] of Object.entries(feature.properties)) {
                 if (key in fieldNameDictionary) {
-                    const fieldName = `${fieldNameDictionary[key]}<span class="subtext">${key}</span>`;
+                    const fieldName = `${fieldNameDictionary[key]}<div class="subtext">${key}</div>`;
                     knownFieldContent += `<h6>${fieldName}</h6><p>${value}</p>`;
                 } else {
-                    unknownFieldContent += `<span class="subtext"><h6>${key}</h6><p>${value}</p></span>`
+                    unknownFieldContent += `<div class="subtext"><h6>${key}</h6><p>${value}</p></div>`
                 }
             }
             layer.bindPopup(knownFieldContent + unknownFieldContent);
