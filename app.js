@@ -197,10 +197,6 @@ const handleGeoPackage = async (fileList) => {
             layerDisplayName = '避難所';
             layerOption.pointToLayer = (feature, layer) => {
                 const marker = L.marker(layer, {icon: HinanjoIcon});
-                // marker.bindLabel(feature.properties.p20_002, {
-                //     noHide: true,
-                //     direction: 'auto'
-                // });
                 return marker;
             };
             fieldNameDictionary['p20_002'] = '名称';
@@ -214,8 +210,19 @@ const handleGeoPackage = async (fileList) => {
             });
         } else if (tableName === 'qgis:voronoipolygons_1:kyusui_voronoi') {
             layerDisplayName = 'ボロノイ分析結果';
+            layerOption.style = () => ({
+                color: '#000000',
+                fillColor: 'transparent',
+                opacity: 0.1,
+            });
         } else if (tableName === 'native:joinattributestable_1:target_kyusui') {
             layerDisplayName = '給水所配置候補地点';
+            layerOption.pointToLayer = (feature, layer) => {
+                const marker = L.marker(layer, {icon: HinanjoIcon});
+                return marker;
+            };
+            fieldNameDictionary['p20_002'] = '名称';
+            fieldNameDictionary['p20_003'] = '住所';
         }
 
         layerOption.onEachFeature = (feature, layer) => {
