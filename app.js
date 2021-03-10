@@ -184,7 +184,15 @@ const handleGeoPackage = async (fileList) => {
             }
             fieldNameDictionary['ptn_2020'] = '人口';
         } else if (tableName === 'dansui_area' || tableName === 'dansui_area2' || tableName === 'dansui_area3') {
-            layerDisplayName = '断水エリア';
+            if (tableName === 'dansui_area') {
+                layerDisplayName = '断水エリア (1)';
+            }
+            else if (tableName === 'dansui_area2') {
+                layerDisplayName = '断水エリア (2)';
+            }
+            else if (tableName === 'dansui_area3') {
+                layerDisplayName = '断水エリア (3)';
+            }
         } else if (tableName === 'hinanjyo') {
             layerDisplayName = '避難所';
             layerOption.pointToLayer = (feature, layer) => {
