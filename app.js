@@ -174,7 +174,7 @@ const handleGeoPackage = async (fileList) => {
             layer.bindPopup(knownFieldContent + unknownFieldContent);
         }
         const layer = L.geoPackageFeatureLayer([], layerOption);
-        layer.number = layerControlContainer.childElementCount;
+        layer.number = layerList.length;
         layer.displayName = layerDisplayName;
         layer.addTo(map);
         layer.onAdd = (map) => L.GeoJSON.prototype.onAdd.call(layer, map); // 同じデータが重複して登録されることを防止
@@ -216,10 +216,26 @@ const renderLayerList = (layerList) => {
             layerControl.querySelector('h6').prepend(layer.options.layerName);
         }
 
+        const swapLayerControl = (layerList, a, b) => {
+            [layerList[a], layerList[b]] = [layerList[b], layerList[a]];
+            layerList[a].number = a;
+            layerList[b].number = b;
+        };
+
         layerControl.querySelector('[data-table-name]').dataset.tableName = layer.options.layerName;
         layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layer.number;
         layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layer.number, e.target.checked);
-        // todo: チェックボックスの状態を反映する
+        layerControl.querySelector('.layer-control-up').onclick = (e) => {
+            if (layer.number === 0) return;
+            swapLayerControl(layerList, layer.number, layer.number - 1);
+            renderLayerList(layerList);
+        };
+        layerControl.querySelector('.layer-control-down').onclick = (e) => {
+            if (layer.number === layerList - 1) return;
+            swapLayerControl(layerList, layer.number, layer.number + 1);
+            renderLayerList(layerList);
+        };
+        layerControl.querySelector('.layer-visibility').checked = map.hasLayer(layer);
         layerControlContainer.appendChild(layerControl);
     }
     arrayLayers(layerList);
