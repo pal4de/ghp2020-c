@@ -150,7 +150,9 @@ const handleGeoPackage = async (fileList) => {
         } else if (tableName === 'dem') {
             layerDisplayName = '標高';
             layerOption.style = () => ({
-                opacity: 0.5
+                opacity: 0.5,
+                weight: 1,
+                color: '#f34545',
             });
         } else if (tableName === 'qgis:voronoipolygons_1:kyusui_voronoi') {
             layerDisplayName = 'ボロノイ分析結果';
