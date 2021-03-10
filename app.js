@@ -81,7 +81,7 @@ const loadGeoPackage = async (file) => {
     return gpkg;
 }
 
-const arrayLayers = () => {
+const arrayLayers = (layerList) => {
     for (const layer of Object.values(layerList)) {
         layer.bringToBack();
     }
@@ -95,9 +95,7 @@ const handleGeoPackage = async (fileList) => {
     const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
     gpkgSelectorContainer.classList.add('gpkg-loading');
     const gpkg = await loadGeoPackage(file);
-    gpkgSelectorContainer.classList.remove('gpkg-loading');
 
-    const layerControlTemplate = document.querySelector('#layer-control-template');
     const layerControlContainer = document.querySelector('#layer-control-container');
     for (const tableName of gpkg.getFeatureTables()) {
         const layerOption = {
@@ -174,30 +172,44 @@ const handleGeoPackage = async (fileList) => {
             layer.bindPopup(knownFieldContent + unknownFieldContent);
         }
         const layer = L.geoPackageFeatureLayer([], layerOption);
-
-        const layerControl = layerControlTemplate.content.cloneNode(true);
-        const layerNumber = layerControlContainer.childElementCount;
-
-        if (layerDisplayName) {
-            layerControl.querySelector('h6').prepend(layerDisplayName);
-            layerControl.querySelector('h6 .subtext').append(tableName);
-        } else {
-            layerControl.querySelector('h6').prepend(tableName);
-        }
-
-        layerControl.querySelector('[data-table-name]').dataset.tableName = tableName;
-        layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layerNumber;
-        layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layerNumber, e.target.checked);
-        layerControlContainer.appendChild(layerControl);
-
+        layer.number = layerControlContainer.childElementCount;
+        layer.displayName = layerDisplayName;
         layer.addTo(map);
         layer.onAdd = (map) => L.GeoJSON.prototype.onAdd.call(layer, map); // 同じデータが重複して登録されることを防止
+
         layerList.push(layer);
     }
+    renderLayerList(layerList);
 
     const allLayersGroup = L.featureGroup(layerList);
     map.fitBounds(allLayersGroup.getBounds());
-    arrayLayers();
+
+    gpkgSelectorContainer.classList.remove('gpkg-loading');
+}
+
+const renderLayerList = (layerList) => {
+    const layerControlTemplate = document.querySelector('#layer-control-template');
+    const layerControlContainer = document.querySelector('#layer-control-container');
+
+    layerControlContainer.innerHTML = '';
+
+    for (const layer of layerList) {
+        const layerControl = layerControlTemplate.content.cloneNode(true);
+
+        if (layer.displayName) {
+            layerControl.querySelector('h6').prepend(layer.displayName);
+            layerControl.querySelector('h6 .subtext').append(layer.options.layerName);
+        } else {
+            layerControl.querySelector('h6').prepend(layer.options.layerName);
+        }
+
+        layerControl.querySelector('[data-table-name]').dataset.tableName = layer.options.layerName;
+        layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layer.number;
+        layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layer.number, e.target.checked);
+        // todo: チェックボックスの状態を反映する
+        layerControlContainer.appendChild(layerControl);
+    }
+    arrayLayers(layerList);
 }
 
 const toggleLayerVisibility = (layerNumber, visible) => {
@@ -205,9 +217,9 @@ const toggleLayerVisibility = (layerNumber, visible) => {
     if (visible) {
         layer.addTo(map);
     } else {
-        layer.remove();
+        layer.removeFrom(map);
     }
-    arrayLayers();
+    arrayLayers(layerList);
 }
 
 const loadGpkgfromServer = async () => {
