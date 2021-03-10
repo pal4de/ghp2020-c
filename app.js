@@ -99,12 +99,12 @@ class LayerList extends Array {
             layerControl.querySelector('[data-table-name]').dataset.tableName = layer.options.layerName;
             layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layer.number;
             layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layer, e.target.checked);
-            layerControl.querySelector('.layer-control-move[data-direction="up"]').onclick = (e) => {
+            layerControl.querySelector('.layer-control-mover[data-direction="up"]').onclick = (e) => {
                 if (layer.number === 0) return;
                 this.swap(layer.number, layer.number - 1);
                 this.render();
             };
-            layerControl.querySelector('.layer-control-move[data-direction="down"]').onclick = (e) => {
+            layerControl.querySelector('.layer-control-mover[data-direction="down"]').onclick = (e) => {
                 if (layer.number === layerList - 1) return;
                 this.swap(layer.number, layer.number + 1);
                 this.render();
