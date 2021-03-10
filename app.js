@@ -92,6 +92,8 @@ const handleGeoPackage = async (fileList) => {
     if (fileList.length === 0) return;
     const file = fileList[0];
 
+    clear();
+
     const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
     gpkgSelectorContainer.classList.add('gpkg-loading');
     const gpkg = await loadGeoPackage(file);
@@ -185,6 +187,17 @@ const handleGeoPackage = async (fileList) => {
     map.fitBounds(allLayersGroup.getBounds());
 
     gpkgSelectorContainer.classList.remove('gpkg-loading');
+}
+
+const clear = () => {
+    for (const layer of layerList) {
+        layer.remove();
+        layerList.remove
+    }
+    layerList.splice(0);
+
+    document.querySelector('#layer-control-container').innerHTML = '';
+    document.querySelector('#gpkg-selector').value = '';
 }
 
 const renderLayerList = (layerList) => {
