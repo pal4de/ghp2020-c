@@ -154,6 +154,13 @@ html, body {
     display: none;
 }
 
+.layer-control-mover {
+    background: none;
+    border: none;
+    font-size: inherit;
+    padding: 0;
+}
+
 #control-toggler {
     position: absolute;
     pointer-events: none;
