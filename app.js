@@ -65,40 +65,90 @@ const ShokasenIcon = new IconTemplate({iconUrl: './icons/shokasen.png'});
 const KyusuishaIcon = new IconTemplate({iconUrl: './icons/kyusuisha.png'});
 const HinanjoIcon = new IconTemplate({iconUrl: './icons/hinanjo.png'});
 
-const readAsArrayBuffer = (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsArrayBuffer(file);
-    });
-}
+class LayerList extends Array {
+    swap(a, b) {
+        [this[a], this[b]] = [this[b], this[a]];
+        this[a].number = a;
+        this[b].number = b;
+    }
 
-const loadGeoPackage = async (file) => {
-    const arrayBuffer = await readAsArrayBuffer(file);
-    const uint8Array = new Uint8Array(arrayBuffer);
-    const gpkg = await geopackage.GeoPackageAPI.open(uint8Array);
-    return gpkg;
-}
+    render() {
+        const toggleLayerVisibility = (layer, visible) => {
+            layer.removeFrom(map);
+            if (visible) {
+                layer.addTo(map);
+            }
+            this.arrayLayers();
+        }
 
-const arrayLayers = (layerList) => {
-    for (const layer of Object.values(layerList)) {
-        layer.bringToBack();
+        const layerControlTemplate = document.querySelector('#layer-control-template');
+        const layerControlContainer = document.querySelector('#layer-control-container');
+
+        layerControlContainer.innerHTML = '';
+
+        for (const layer of this) {
+            const layerControl = layerControlTemplate.content.cloneNode(true);
+
+            if (layer.displayName) {
+                layerControl.querySelector('h6').prepend(layer.displayName);
+                layerControl.querySelector('h6 .subtext').append(layer.options.layerName);
+            } else {
+                layerControl.querySelector('h6').prepend(layer.options.layerName);
+            }
+
+            layerControl.querySelector('[data-table-name]').dataset.tableName = layer.options.layerName;
+            layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layer.number;
+            layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layer, e.target.checked);
+            layerControl.querySelector('.layer-control-move[data-direction="up"]').onclick = (e) => {
+                if (layer.number === 0) return;
+                this.swap(layer.number, layer.number - 1);
+                this.render();
+            };
+            layerControl.querySelector('.layer-control-move[data-direction="down"]').onclick = (e) => {
+                if (layer.number === layerList - 1) return;
+                this.swap(layer.number, layer.number + 1);
+                this.render();
+            };
+            layerControl.querySelector('.layer-visibility').checked = map.hasLayer(layer);
+            layerControlContainer.appendChild(layerControl);
+        }
+        this.arrayLayers(layerList);
+    }
+
+    arrayLayers() {
+        for (const layer of this) {
+            layer.bringToBack();
+        }
     }
 }
+const layerList = new LayerList();
 
-const layerList = [];
 const handleGeoPackage = async (fileList) => {
     if (fileList.length === 0) return;
     const file = fileList[0];
 
     clear();
 
+    const loadGeoPackage = async (file) => {
+        const asyncReadAsArrayBuffer = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(reader.error);
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        const arrayBuffer = await asyncReadAsArrayBuffer(file);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        const gpkg = await geopackage.GeoPackageAPI.open(uint8Array);
+        return gpkg;
+    }
+
     const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
     gpkgSelectorContainer.classList.add('gpkg-loading');
     const gpkg = await loadGeoPackage(file);
 
-    const layerControlContainer = document.querySelector('#layer-control-container');
     for (const tableName of gpkg.getFeatureTables()) {
         const layerOption = {
             geoPackage: gpkg,
@@ -181,7 +231,7 @@ const handleGeoPackage = async (fileList) => {
 
         layerList.push(layer);
     }
-    renderLayerList(layerList);
+    layerList.render();
 
     const allLayersGroup = L.featureGroup(layerList);
     map.fitBounds(allLayersGroup.getBounds());
@@ -192,63 +242,11 @@ const handleGeoPackage = async (fileList) => {
 const clear = () => {
     for (const layer of layerList) {
         layer.remove();
-        layerList.remove
     }
     layerList.splice(0);
 
     document.querySelector('#layer-control-container').innerHTML = '';
     document.querySelector('#gpkg-selector').value = '';
-}
-
-const renderLayerList = (layerList) => {
-    const layerControlTemplate = document.querySelector('#layer-control-template');
-    const layerControlContainer = document.querySelector('#layer-control-container');
-
-    layerControlContainer.innerHTML = '';
-
-    for (const layer of layerList) {
-        const layerControl = layerControlTemplate.content.cloneNode(true);
-
-        if (layer.displayName) {
-            layerControl.querySelector('h6').prepend(layer.displayName);
-            layerControl.querySelector('h6 .subtext').append(layer.options.layerName);
-        } else {
-            layerControl.querySelector('h6').prepend(layer.options.layerName);
-        }
-
-        const swapLayerControl = (layerList, a, b) => {
-            [layerList[a], layerList[b]] = [layerList[b], layerList[a]];
-            layerList[a].number = a;
-            layerList[b].number = b;
-        };
-
-        layerControl.querySelector('[data-table-name]').dataset.tableName = layer.options.layerName;
-        layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layer.number;
-        layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layer.number, e.target.checked);
-        layerControl.querySelector('.layer-control-move[data-direction="up"]').onclick = (e) => {
-            if (layer.number === 0) return;
-            swapLayerControl(layerList, layer.number, layer.number - 1);
-            renderLayerList(layerList);
-        };
-        layerControl.querySelector('.layer-control-move[data-direction="down"]').onclick = (e) => {
-            if (layer.number === layerList - 1) return;
-            swapLayerControl(layerList, layer.number, layer.number + 1);
-            renderLayerList(layerList);
-        };
-        layerControl.querySelector('.layer-visibility').checked = map.hasLayer(layer);
-        layerControlContainer.appendChild(layerControl);
-    }
-    arrayLayers(layerList);
-}
-
-const toggleLayerVisibility = (layerNumber, visible) => {
-    const layer = layerList[layerNumber];
-    if (visible) {
-        layer.addTo(map);
-    } else {
-        layer.removeFrom(map);
-    }
-    arrayLayers(layerList);
 }
 
 const loadGpkgfromServer = async () => {
