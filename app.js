@@ -145,7 +145,7 @@ const handleGeoPackage = async (fileList) => {
     const knownLayersList = [
         {
             layerName: 'hinanjyo_with_priority',
-            displayName: '給水所配置候補地 (優先度付き)',
+            displayName: '候補地 (優先度付き)',
             visible: true,
             fieldName: {
                 'p20_002': '名称',
@@ -181,19 +181,18 @@ const handleGeoPackage = async (fileList) => {
                 return L.marker(latlng, {icon});
             },
         },
-        // {
-        //     layerName: 'native:joinattributestable_1:target_kyusui',
-        //     displayName: '給水所配置候補地',
-        //     visible: true,
-        //     fieldName: {
-        //         'p20_002': '名称',
-        //         'p20_003': '住所',
-        //         'p20_004': '施設の種類',
-        //         'p20_005': '収容人数',
-        //         'p20_007': '施設規模',
-        //     },
-        //     // pointToLayer: (feature, latlng) => L.marker(latlng, {icon: KyusuishaIcon}),
-        // },
+        {
+            layerName: 'native:joinattributestable_1:target_kyusui',
+            displayName: '候補地',
+            visible: true,
+            fieldName: {
+                'p20_002': '名称',
+                'p20_003': '住所',
+                'p20_004': '施設の種類',
+                'p20_005': '収容人数',
+                'p20_007': '施設規模',
+            },
+        },
         {
             layerName: 'qgis:voronoipolygons_1:kyusui_voronoi',
             displayName: 'ボロノイ分析結果',
