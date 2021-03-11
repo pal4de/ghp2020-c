@@ -1,29 +1,24 @@
-// original: https://day-journal.com/memo/try-054/
-
 const basicMap = new L.tileLayer(
     'https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png',
     {
         attribution: `&copy; <a href="www.openstreetmap.org" target="_blank">OpenStreetMap</a> contributors`
     }
 );
-const mapOption = {
+const map = L.map('map', {
     center: [37.45741810262938, 137.54882812500003],
     zoom: 5,
     zoomControl: false,
     layers: [basicMap],
-}
-const map = L.map('map', mapOption);
+});
 
-const zoomControlOption = {
+L.control.zoom({
     position: 'bottomleft',
-}
-L.control.zoom(zoomControlOption).addTo(map);
+}).addTo(map);
 
-const scaleControlOption = {
+L.control.scale({
     imperial: false,
     position: 'bottomright',
-};
-L.control.scale(scaleControlOption).addTo(map);
+}).addTo(map);
 
 L.Control.ControlToggler = L.Control.extend({
     onAdd: (map) => {
@@ -46,24 +41,12 @@ L.Control.ControlToggler = L.Control.extend({
         }
     }
 });
-const controlTogglerOption = {
+L.control.controlToggler = function(opts) {
+    return new L.Control.ControlToggler(opts);
+}
+L.control.controlToggler({
     position: 'topleft',
-};
-const controlToggler = new L.Control.ControlToggler(controlTogglerOption);
-controlToggler.addTo(map);
-
-const IconTemplate = L.Icon.extend({
-    options: {
-        iconSize: [15, 15],
-        shadowSize: [0, 0],
-        iconAnchor: [7.5, 7.5],
-        shadowAnchor: [0, 0],
-        popupAnchor: [7.5, 0]
-    }
-});
-const ShokasenIcon = new IconTemplate({iconUrl: './icons/shokasen.png'});
-const KyusuishaIcon = new IconTemplate({iconUrl: './icons/kyusuisha.png'});
-const HinanjoIcon = new IconTemplate({iconUrl: './icons/hinanjo.png'});
+}).addTo(map);
 
 class LayerList extends Array {
     swap(a, b) {
@@ -122,6 +105,17 @@ class LayerList extends Array {
     }
 }
 const layersList = new LayerList();
+const complementalsList = [];
+document.querySelector('#toggle-complementals').onchange = (e) => {
+    for (const complemental of complementalsList) {
+        if (e.target.checked) {
+            complemental.addTo(map);
+        } else {
+            complemental.removeFrom(map);
+        }
+    }
+    layersList.render();
+};
 
 const handleGeoPackage = async (fileList) => {
     if (fileList.length === 0) return;
@@ -145,6 +139,17 @@ const handleGeoPackage = async (fileList) => {
         return gpkg;
     }
 
+    const IconTemplate = L.Icon.extend({
+        options: {
+            iconSize: [15, 15],
+            shadowSize: [0, 0],
+            iconAnchor: [7.5, 7.5],
+            shadowAnchor: [0, 0],
+            popupAnchor: [7.5, 0]
+        }
+    });
+    const HinanjoIcon = new IconTemplate({iconUrl: './icons/hinanjo.png'});
+
     const knownLayersList = [
         {
             layerName: 'hinanjyo_with_priority',
@@ -165,10 +170,6 @@ const handleGeoPackage = async (fileList) => {
         {
             layerName: 'native:joinattributestable_1:target_kyusui',
             displayName: '給水所配置候補地',
-            pointToLayer: (feature, layer) => {
-                const marker = L.marker(layer, {icon: HinanjoIcon});
-                return marker;
-            },
             fieldName: {
                 'p20_002': '名称',
                 'p20_003': '住所',
@@ -176,10 +177,15 @@ const handleGeoPackage = async (fileList) => {
                 'p20_005': '収容人数',
                 'p20_007': '施設規模',
             },
+            pointToLayer: (feature, layer) => {
+                const marker = L.marker(layer, {icon: HinanjoIcon});
+                return marker;
+            },
         },
         {
             layerName: 'qgis:voronoipolygons_1:kyusui_voronoi',
             displayName: 'ボロノイ分析結果',
+            complemental: true,
             style: {
                 color: '#000000',
                 fillColor: 'transparent',
@@ -200,7 +206,7 @@ const handleGeoPackage = async (fileList) => {
             pointToLayer: (feature, layer) => {
                 const marker = L.marker(layer, {icon: HinanjoIcon});
                 return marker;
-            }
+            },
         },
         // { layerName: 'dansui_area' },
         {
@@ -212,6 +218,7 @@ const handleGeoPackage = async (fileList) => {
         {
             layerName: '500m_mesh_2018_43',
             displayName: '人口',
+            complemental: true,
             fieldName: {
                 'ptn_2020': '人口'
             },
@@ -237,11 +244,12 @@ const handleGeoPackage = async (fileList) => {
                     fillColor: selectColor(population),
                     fillOpacity: 0.3,
                 }
-            }
+            },
         },
         {
             layerName: 'dem',
             displayName: '等高線',
+            complemental: true,
             style: {
                 opacity: 1,
                 weight: 1,
@@ -280,12 +288,14 @@ const handleGeoPackage = async (fileList) => {
         const initiallyVisible = preset.visible ?? false;
 
         const layer = L.geoPackageFeatureLayer([], layerOption);
-
         layer.onAdd(map); // データの読み込み
         layer.onAdd = (map) => L.GeoJSON.prototype.onAdd.call(layer, map); // 同じデータが重複して登録されることを防止
         if (initiallyVisible) layer.addTo(map);
 
         layersList.push(layer);
+        if (preset.complemental ?? false) {
+            complementalsList.push(layer);
+        }
     }
     layersList.sort((layerA, layerB) => {
         const keysList = knownLayersList.map(preset => preset.layerName);
@@ -304,6 +314,7 @@ const handleGeoPackage = async (fileList) => {
     });
 
     gpkgSelectorContainer.classList.remove('gpkg-loading');
+    document.querySelector('#layer-control-panel').style.display = 'block';
 }
 
 const clear = () => {

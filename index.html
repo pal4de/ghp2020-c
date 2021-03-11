@@ -1,51 +1,53 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <!-- <script src="https://unpkg.com/leaflet.label@0.2.4/dist/leaflet.label.js"></script> -->
-    <script src="https://unpkg.com/@ngageoint/geopackage@3.0.9/dist/geopackage-browser.js"></script>
-    <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@3.0.3/dist/leaflet-geopackage.js"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;900&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="style.css">
-    <title>ミズリーチ</title>
-</head>
-<body id="app">
-    <div id="control">
-        <header>
-            <h1>ミズリーチ</h1>
-            <div class="description">断水エリアとオープンデータ(人口、標高、避難所の位置)を組み合わせて可視化し、給水所開設の優先順位の決定を支援するシステム</div>
-        </header>
-        <section>
-            <h6>GeoPackageファイル</h6>
-            <div id="gpkg-selector-container">
-                <input type="file" accept=".gpkg" id="gpkg-selector" onchange="handleGeoPackage(this.files)">
-                <div id="gpkg-selector-loading-text">読み込み中...</div>
-                <button id="gpkg-load-from-server-button" onclick="loadGpkgfromServer()">サーバーから読み込む</button>
-            </div>
-            <!-- <h6 for="watarstation-count">給水所の数</h6>
-            <input type="number" name="watarstation-count" id="watarstation-count" value="0"> -->
-        </section>
-        <section id="layer-control-container">
-        </section>
-        <template id="layer-control-template">
-            <div class="layer-control-unit" data-table-name data-layer-number>
-                <h6><div class="subtext"></div></h6>
-                <p>
-                    <button class="material-icons layer-control-mover" data-direction="up">arrow_upward</button>
-                    <button class="material-icons layer-control-mover" data-direction="down">arrow_downward</button>
-                    <input type="checkbox" class="layer-visibility material-icons">
-                </p>
-            </div>
-        </template>
-    </div>
-    <div id="map"></div>
-    <div id="fader" onclick="L.Control.ControlToggler.prototype.toggle(false)"></div>
-    <script src="app.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <!-- <script src="https://unpkg.com/leaflet.label@0.2.4/dist/leaflet.label.js"></script> -->
+        <script src="https://unpkg.com/@ngageoint/geopackage@3.0.9/dist/geopackage-browser.js"></script>
+        <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@3.0.3/dist/leaflet-geopackage.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;900&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="style.css">
+        <title>ミズリーチ</title>
+    </head>
+    <body id="app">
+        <div id="control">
+            <header>
+                <h1>ミズリーチ</h1>
+                <div class="description">断水エリアとオープンデータ(人口、標高、避難所の位置)を組み合わせて可視化し、給水所開設の優先順位の決定を支援するシステム</div>
+            </header>
+            <section>
+                <h6>GeoPackageファイル</h6>
+                <div id="gpkg-selector-container">
+                    <input type="file" accept=".gpkg" id="gpkg-selector" onchange="handleGeoPackage(this.files)">
+                    <div id="gpkg-selector-loading-text">読み込み中...</div>
+                    <button id="gpkg-load-from-server-button" onclick="loadGpkgfromServer()">サーバーから読み込む</button>
+                </div>
+            </section>
+            <section id="layer-control-panel" style="display: none;">
+                <label><input type="checkbox" id="toggle-complementals">補足レイヤーを表示</label>
+                <div class="subtext">人口レイヤー・標高レイヤー・ボロノイ分析結果レイヤーをまとめて表示/非表示出来ます。配置の参考にしてください。</div>
+            </section>
+            <section id="layer-control-container">
+            </section>
+            <template id="layer-control-template">
+                <div class="layer-control-unit" data-table-name data-layer-number>
+                    <h6><div class="subtext"></div></h6>
+                    <p>
+                        <button class="material-icons layer-control-mover" data-direction="up">arrow_upward</button>
+                        <button class="material-icons layer-control-mover" data-direction="down">arrow_downward</button>
+                        <input type="checkbox" class="layer-visibility material-icons">
+                    </p>
+                </div>
+            </template>
+        </div>
+        <div id="map"></div>
+        <div id="fader" onclick="L.Control.ControlToggler.prototype.toggle(false)"></div>
+        <script src="app.js"></script>
+    </body>
 </html>
