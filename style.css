@@ -115,7 +115,7 @@ html, body {
 }
 
 #gpkg-selector:hover,
-#gpkg-load-from-server-button:hover {
+#load-sample-button:hover {
     background-color: rgba(0, 0, 0, 0.03);
 }
 
@@ -141,16 +141,16 @@ html, body {
     display: inline-block;
 }
 
-#gpkg-load-from-server-button {
+#load-sample-button {
     width: 100%;
     padding: 10px;
     background: transparent;
     border: none;
-    border-top: #ddd 3px solid;
-    color: #aaa
+    color: #aaa;
+    margin: auto;
 }
 
-.gpkg-loading #gpkg-load-from-server-button {
+.gpkg-loading #load-sample-button {
     display: none;
 }
 

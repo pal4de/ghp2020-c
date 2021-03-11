@@ -21,13 +21,13 @@
                 <h1>ミズリーチ</h1>
                 <div class="description">断水エリアとオープンデータ(人口、標高、避難所の位置)を組み合わせて可視化し、給水所開設の優先順位の決定を支援するシステム</div>
             </header>
-            <section>
+            <section id="gpkg-control">
                 <h6>GeoPackageファイル</h6>
                 <div id="gpkg-selector-container">
                     <input type="file" accept=".gpkg" id="gpkg-selector" onchange="handleGeoPackage(this.files)">
                     <div id="gpkg-selector-loading-text">読み込み中...</div>
-                    <button id="gpkg-load-from-server-button" onclick="loadGpkgfromServer()">サンプルデータを読み込む</button>
                 </div>
+                <button id="load-sample-button" onclick="loadGpkgfromServer()">サンプルデータを読み込む</button>
             </section>
             <section id="layer-control-panel" style="display: none;">
                 <label><input type="checkbox" id="toggle-complementals">補足レイヤーを表示</label>

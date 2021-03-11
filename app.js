@@ -126,8 +126,6 @@ const handleGeoPackage = async (fileList) => {
     if (fileList.length === 0) return;
     const file = fileList[0];
 
-    clear();
-
     const loadGeoPackage = async (file) => {
         const asyncReadAsArrayBuffer = (file) => {
             return new Promise((resolve, reject) => {
@@ -276,8 +274,10 @@ const handleGeoPackage = async (fileList) => {
         }
     ];
 
-    const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
-    gpkgSelectorContainer.classList.add('gpkg-loading');
+    clear();
+
+    const gpkgControl = document.querySelector('#gpkg-control');
+    gpkgControl.classList.add('gpkg-loading');
     const gpkg = await loadGeoPackage(file);
 
     for (const tableName of gpkg.getFeatureTables()) {
@@ -331,7 +331,7 @@ const handleGeoPackage = async (fileList) => {
         easeLinearity: 0.5,
     });
 
-    gpkgSelectorContainer.classList.remove('gpkg-loading');
+    gpkgControl.classList.remove('gpkg-loading');
     document.querySelector('#layer-control-panel').style.display = 'block';
 }
 
@@ -346,18 +346,10 @@ const clear = () => {
 }
 
 const loadGpkgfromServer = async () => {
-    const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
-    const gpkgSelector = document.querySelector('#gpkg-selector');
-    gpkgSelectorContainer.classList.add('gpkg-loading');
+    document.querySelector('#gpkg-control').classList.add('gpkg-loading');
 
     const response = await fetch('/data/db.gpkg');
     const blob = await response.blob();
-    const file = new File([blob], 'db.gpkg')
-
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    gpkgSelector.files = dataTransfer.files;
-    gpkgSelectorContainer.classList.remove('gpkg-loading');
-
-    gpkgSelector.onchange();
+    const file = new File([blob], 'db.gpkg');
+    handleGeoPackage([file]);
 }
