@@ -144,6 +144,13 @@ const handleGeoPackage = async (fileList) => {
         return gpkg;
     }
 
+    const calcWaterQuantity = (coefficient) => {
+        return (feature) => {
+            const quantity = feature.properties.priority * coefficient;
+            return `${quantity} L`;
+        }
+    }
+
     const knownLayersList = [
         {
             layerName: 'hinanjyo_with_priority',
@@ -178,6 +185,12 @@ const handleGeoPackage = async (fileList) => {
                 });
                 return L.marker(latlng, {icon});
             },
+            additionalProperties: {
+                '参考水量 (0-3日経過)': calcWaterQuantity(3),
+                '参考水量 (3-10日経過)': calcWaterQuantity(20),
+                '参考水量 (10-21日経過)': calcWaterQuantity(100),
+                '参考水量 (21-28日経過)': calcWaterQuantity(250),
+            },
         },
         {
             layerName: 'native:joinattributestable_1:target_kyusui',
@@ -189,6 +202,12 @@ const handleGeoPackage = async (fileList) => {
                 'p20_004': '施設の種類',
                 'p20_005': '収容人数',
                 'p20_007': '施設規模',
+            },
+            additionalProperties: {
+                '参考水量 (0-3日経過)': calcWaterQuantity(3),
+                '参考水量 (3-10日経過)': calcWaterQuantity(20),
+                '参考水量 (10-21日経過)': calcWaterQuantity(100),
+                '参考水量 (21-28日経過)': calcWaterQuantity(250),
             },
         },
         {
@@ -219,6 +238,12 @@ const handleGeoPackage = async (fileList) => {
                     shadowSize: [0, 0],
                 });
                 return L.marker(latlng, {icon});
+            },
+            additionalProperties: {
+                '参考水量 (0-3日経過)': calcWaterQuantity(3),
+                '参考水量 (3-10日経過)': calcWaterQuantity(20),
+                '参考水量 (10-21日経過)': calcWaterQuantity(100),
+                '参考水量 (21-28日経過)': calcWaterQuantity(250),
             },
         },
         {
@@ -294,6 +319,9 @@ const handleGeoPackage = async (fileList) => {
                     } else {
                         unknownFieldContent += `<div class="subtext"><h6>${key}</h6><p>${value}</p></div>`
                     }
+                }
+                for (const [key, valueFunc] of Object.entries(preset.additionalProperties ?? {})) {
+                    knownFieldContent += `<h6>${key}</h6><p>${valueFunc(feature)}</p>`;
                 }
                 layer.bindPopup(knownFieldContent + unknownFieldContent);
             }
