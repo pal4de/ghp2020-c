@@ -145,130 +145,139 @@ const handleGeoPackage = async (fileList) => {
         return gpkg;
     }
 
-    const knownLayersMap = new Map();
-    knownLayersMap.set('hinanjyo_with_priority', {
-        visible: true,
-        displayName: '給水所配置候補地 (優先度付き)',
-        fieldName: {
-            'p20_002': '名称',
-            'p20_003': '住所',
+    const knownLayersList = [
+        {
+            layerName: 'hinanjyo_with_priority',
+            displayName: '給水所配置候補地 (優先度付き)',
+            visible: true,
+            fieldName: {
+                'p20_002': '名称',
+                'p20_003': '住所',
+                'p20_004': '施設の種類',
+                'p20_005': '収容人数',
+                'p20_007': '施設規模',
+            },
+            pointToLayer: (feature, layer) => {
+                const marker = L.marker(layer, {icon: HinanjoIcon});
+                return marker;
+            }
         },
-        pointToLayer: (feature, layer) => {
-            const marker = L.marker(layer, {icon: HinanjoIcon});
-            return marker;
-        }
-    });
-    knownLayersMap.set('native:joinattributestable_1:target_kyusui', {
-        displayName: '給水所配置候補地',
-        pointToLayer: (feature, layer) => {
-            const marker = L.marker(layer, {icon: HinanjoIcon});
-            return marker;
+        {
+            layerName: 'native:joinattributestable_1:target_kyusui',
+            displayName: '給水所配置候補地',
+            pointToLayer: (feature, layer) => {
+                const marker = L.marker(layer, {icon: HinanjoIcon});
+                return marker;
+            },
+            fieldName: {
+                'p20_002': '名称',
+                'p20_003': '住所',
+                'p20_004': '施設の種類',
+                'p20_005': '収容人数',
+                'p20_007': '施設規模',
+            },
         },
-        fieldName: {
-            'p20_002': '名称',
-            'p20_003': '住所',
+        {
+            layerName: 'qgis:voronoipolygons_1:kyusui_voronoi',
+            displayName: 'ボロノイ分析結果',
+            style: {
+                color: '#000000',
+                fillColor: 'transparent',
+                weight: 1
+            },
         },
-    });
-    knownLayersMap.set('qgis:voronoipolygons_1:kyusui_voronoi', {
-        displayName: 'ボロノイ分析結果',
-        style: () => ({
-            color: '#000000',
-            fillColor: 'transparent',
-            weight: 1
-        }),
-    });
-    knownLayersMap.set('hinanjyo', {
-        visible: true,
-        displayName: '避難所',
-        fieldName: {
-            'p20_002': '名称',
-            'p20_003': '住所',
+        {
+            layerName: 'hinanjyo',
+            displayName: '避難所',
+            visible: true,
+            fieldName: {
+                'p20_002': '名称',
+                'p20_003': '住所',
+                'p20_004': '施設の種類',
+                'p20_005': '収容人数',
+                'p20_007': '施設規模',
+            },
+            pointToLayer: (feature, layer) => {
+                const marker = L.marker(layer, {icon: HinanjoIcon});
+                return marker;
+            }
         },
-        pointToLayer: (feature, layer) => {
-            const marker = L.marker(layer, {icon: HinanjoIcon});
-            return marker;
-        }
-    });
-    // knownLayersMap.set('dansui_area', {});
-    knownLayersMap.set('dansui_area2', {
-        visible: true,
-        displayName: '断水エリア'
-    });
-    // knownLayersMap.set('dansui_area'3, {});
-    knownLayersMap.set('500m_mesh_2018_43', {
-        displayName: '人口',
-        fieldName: {
-            'ptn_2020': '人口'
+        // { layerName: 'dansui_area' },
+        {
+            layerName: 'dansui_area2',
+            displayName: '断水エリア',
+            visible: true,
         },
-        style: (feature) => {
-            const selectColor = (population) => {
-                if (population < 770) {
-                    return '#fef0d9';
-                } else if (population < 1540) {
-                    return '#fdcc8a';
-                } else if (population < 2310) {
-                    return '#fc8d59';
-                } else if (population < 3080) {
-                    return '#e34a33';
-                } else {
-                    return '#b30000';
+        // { layerName: 'dansui_area3' },
+        {
+            layerName: '500m_mesh_2018_43',
+            displayName: '人口',
+            fieldName: {
+                'ptn_2020': '人口'
+            },
+            style: (feature) => {
+                const selectColor = (population) => {
+                    if (population < 770) {
+                        return '#fef0d9';
+                    } else if (population < 1540) {
+                        return '#fdcc8a';
+                    } else if (population < 2310) {
+                        return '#fc8d59';
+                    } else if (population < 3080) {
+                        return '#e34a33';
+                    } else {
+                        return '#b30000';
+                    }
+                }
+
+                const population = feature.properties.ptn_2020;
+                return {
+                    color: 'transparent',
+                    weight: 1,
+                    fillColor: selectColor(population),
+                    fillOpacity: 0.3,
                 }
             }
-
-            const population = feature.properties.ptn_2020;
-            return {
-                color: 'transparent',
+        },
+        {
+            layerName: 'dem',
+            displayName: '等高線',
+            style: {
+                opacity: 1,
                 weight: 1,
-                fillColor: selectColor(population),
-                fillOpacity: 0.3,
-            }
+                color: '#f34545',
+            },
         }
-    });
-    knownLayersMap.set('dem', {
-        displayName: '等高線',
-        style: (feature) => ({
-            opacity: 1,
-            weight: 1,
-            color: '#f34545',
-        })
-    });
+    ];
 
     const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
     gpkgSelectorContainer.classList.add('gpkg-loading');
     const gpkg = await loadGeoPackage(file);
 
     for (const tableName of gpkg.getFeatureTables()) {
+        const preset = knownLayersList.find((preset) => preset.layerName == tableName) ?? {};
         const layerOption = {
             geoPackage: gpkg,
             layerName: tableName,
-            displayName: null,
-        };
-        let initiallyVisible = false;
-
-        if (knownLayersMap.has(tableName)) {
-            const preset = knownLayersMap.get(tableName);
-
-            initiallyVisible = preset.visible ?? false;
-            layerOption.displayName = preset.displayName ?? null;
-            layerOption.style = preset.style ?? undefined;
-            layerOption.pointToLayer = preset.pointToLayer ?? undefined;
-            if (preset.fieldName) {
-                layerOption.onEachFeature = (feature, layer) => {
-                    let knownFieldContent = '';
-                    let unknownFieldContent = '';
-                    for (const [key, value] of Object.entries(feature.properties)) {
-                        if (key in preset.fieldName) {
-                            const fieldName = `${preset.fieldName[key]}<div class="subtext">${key}</div>`;
-                            knownFieldContent += `<h6>${fieldName}</h6><p>${value}</p>`;
-                        } else {
-                            unknownFieldContent += `<div class="subtext"><h6>${key}</h6><p>${value}</p></div>`
-                        }
+            displayName: preset.displayName ?? null,
+            style: preset.style ?? undefined,
+            pointToLayer: preset.pointToLayer ?? undefined,
+            number: layerList.length,
+            onEachFeature: (feature, layer) => {
+                let knownFieldContent = '';
+                let unknownFieldContent = '';
+                for (const [key, value] of Object.entries(feature.properties)) {
+                    if (key in (preset.fieldName ?? {})) {
+                        const fieldName = `${preset.fieldName[key]}<div class="subtext">${key}</div>`;
+                        knownFieldContent += `<h6>${fieldName}</h6><p>${value}</p>`;
+                    } else {
+                        unknownFieldContent += `<div class="subtext"><h6>${key}</h6><p>${value}</p></div>`
                     }
-                    layer.bindPopup(knownFieldContent + unknownFieldContent);
                 }
+                layer.bindPopup(knownFieldContent + unknownFieldContent);
             }
-        }
-        layerOption.number = layerList.length;
+        };
+        const initiallyVisible = preset.visible ?? false;
 
         const layer = L.geoPackageFeatureLayer([], layerOption);
 
@@ -278,6 +287,14 @@ const handleGeoPackage = async (fileList) => {
 
         layerList.push(layer);
     }
+    layerList.sort((layerA, layerB) => {
+        const keysList = knownLayersList.map(preset => preset.layerName);
+        const indexA = keysList.indexOf(layerA.options.layerName);
+        const indexB = keysList.indexOf(layerB.options.layerName);
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+    });
     layerList.render();
 
     const allLayersGroup = L.featureGroup(layerList);

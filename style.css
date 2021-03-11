@@ -161,6 +161,16 @@ html, body {
     padding: 0;
 }
 
+/* .layer-visibility {
+}
+.layer-visibility::before {
+    content: 'check_box_outline_blank';
+    display: block;
+}
+.layer-visibility:checked:before {
+    content: 'check_box';
+} */
+
 #control-toggler {
     position: absolute;
     pointer-events: none;
