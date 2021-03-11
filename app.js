@@ -170,13 +170,9 @@ const handleGeoPackage = async (fileList) => {
                 }
 
                 const icon = new L.Icon({
+                    ...L.Icon.Default.prototype.options,
                     iconUrl: selectIcon(priority),
-                    iconAnchor: [12, 41],
-                    iconSize: [25, 41],
                     shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-                    shadowSize: [41, 41],
-                    popupAnchor: [1, -34],
-                    tooltipAnchor: [16, -28],
                 });
                 return L.marker(latlng, {icon});
             },
