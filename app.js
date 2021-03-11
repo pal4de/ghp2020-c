@@ -223,12 +223,12 @@ const handleGeoPackage = async (fileList) => {
                 return L.marker(latlng, {icon});
             },
         },
-        // { layerName: 'dansui_area' },
         {
-            layerName: 'dansui_area2',
+            layerName: 'dansui_area',
             displayName: '断水エリア',
             visible: true,
         },
+        // { layerName: 'dansui_area2' },
         // { layerName: 'dansui_area3' },
         {
             layerName: '500m_mesh_2018_43',
