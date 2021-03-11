@@ -346,7 +346,7 @@ const clear = () => {
 const loadGpkgfromServer = async () => {
     document.querySelector('#gpkg-control').classList.add('gpkg-loading');
 
-    const response = await fetch('/data/db.gpkg');
+    const response = await fetch('./data/db.gpkg');
     const blob = await response.blob();
     const file = new File([blob], 'db.gpkg');
     handleGeoPackage([file]);
