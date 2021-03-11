@@ -271,9 +271,9 @@ const handleGeoPackage = async (fileList) => {
         layerOption.number = layerList.length;
 
         const layer = L.geoPackageFeatureLayer([], layerOption);
-        layer.addTo(map);
+
+        layer.onAdd(map); // データの読み込み
         layer.onAdd = (map) => L.GeoJSON.prototype.onAdd.call(layer, map); // 同じデータが重複して登録されることを防止
-        layer.removeFrom(map);
         if (initiallyVisible) layer.addTo(map);
 
         layerList.push(layer);
