@@ -53,11 +53,9 @@ const initMap = () => {
 }
 const map = initMap();
 
-class LayerList extends Array {
+class LayersList extends Array {
     swap(a, b) {
         [this[a], this[b]] = [this[b], this[a]];
-        this[a].number = a;
-        this[b].number = b;
     }
 
     render() {
@@ -77,24 +75,24 @@ class LayerList extends Array {
         for (const layer of this) {
             const layerControl = layerControlTemplate.content.cloneNode(true);
 
-            if (layer.options.displayName) {
-                layerControl.querySelector('h6').prepend(layer.options.displayName);
+            if (layer.displayName) {
+                layerControl.querySelector('h6').prepend(layer.displayName);
                 layerControl.querySelector('h6 .subtext').append(layer.options.layerName);
             } else {
                 layerControl.querySelector('h6 .subtext').prepend(layer.options.layerName);
             }
 
-            layerControl.querySelector('[data-table-name]').dataset.tableName = layer.options.layerName;
-            layerControl.querySelector('[data-layer-number]').dataset.layerNumber = layer.number;
             layerControl.querySelector('.layer-visibility').onchange = (e) => toggleLayerVisibility(layer, e.target.checked);
             layerControl.querySelector('.layer-control-mover[data-direction="up"]').onclick = (e) => {
-                if (layer.number === 0) return;
-                this.swap(layer.number, layer.number - 1);
+                const number = layer.getNumber();
+                if (number === 0) return;
+                this.swap(layer.getNumber(), layer.getNumber() - 1);
                 this.render();
             };
             layerControl.querySelector('.layer-control-mover[data-direction="down"]').onclick = (e) => {
-                if (layer.number === layersList - 1) return;
-                this.swap(layer.number, layer.number + 1);
+                const number = layer.getNumber();
+                if (number === layersList - 1) return;
+                this.swap(number, number + 1);
                 this.render();
             };
             layerControl.querySelector('.layer-visibility').checked = map.hasLayer(layer);
@@ -284,8 +282,6 @@ const handleGeoPackage = async (fileList) => {
         const layerOption = {
             geoPackage: gpkg,
             layerName: tableName,
-            displayName: preset.displayName ?? null,
-            number: layersList.length,
             style: preset.style ?? undefined,
             pointToLayer: preset.pointToLayer ?? undefined,
             onEachFeature: (feature, layer) => {
@@ -305,6 +301,9 @@ const handleGeoPackage = async (fileList) => {
         const initiallyVisible = preset.visible ?? false;
 
         const layer = L.geoPackageFeatureLayer([], layerOption);
+        layer.displayName = preset.displayName ?? null;
+        layer.getNumber = () => layersList.indexOf(layer);
+
         layer.onAdd(map); // データの読み込み
         layer.onAdd = (map) => L.GeoJSON.prototype.onAdd.call(layer, map); // 同じデータが重複して登録されることを防止
         if (initiallyVisible) layer.addTo(map);
