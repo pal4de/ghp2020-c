@@ -1,52 +1,57 @@
-const basicMap = new L.tileLayer(
-    'https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png',
-    {
-        attribution: `&copy; <a href="www.openstreetmap.org" target="_blank">OpenStreetMap</a> contributors`
-    }
-);
-const map = L.map('map', {
-    center: [37.45741810262938, 137.54882812500003],
-    zoom: 5,
-    zoomControl: false,
-    layers: [basicMap],
-});
+const initMap = () => {
+    const basicMap = new L.tileLayer(
+        'https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png',
+        {
+            attribution: `&copy; <a href="www.openstreetmap.org" target="_blank">OpenStreetMap</a> contributors`
+        }
+    );
+    const map = L.map('map', {
+        center: [37.45741810262938, 137.54882812500003],
+        zoom: 5,
+        zoomControl: false,
+        layers: [basicMap],
+    });
 
-L.control.zoom({
-    position: 'bottomleft',
-}).addTo(map);
+    L.control.zoom({
+        position: 'bottomleft',
+    }).addTo(map);
 
-L.control.scale({
-    imperial: false,
-    position: 'bottomright',
-}).addTo(map);
+    L.control.scale({
+        imperial: false,
+        position: 'bottomright',
+    }).addTo(map);
 
-L.Control.ControlToggler = L.Control.extend({
-    onAdd: (map) => {
-        let button = L.DomUtil.create('button', 'custom-panel leaflet-bar material-icons');
-        button.id = 'control-toggler';
-        button.innerText = 'menu';
-        button.onclick = L.Control.ControlToggler.prototype.toggle;
-        return button;
-    },
-    toggle: (show) => {
-        const body = document.querySelector('body');
-        if (show === undefined) {
-            body.classList.toggle('control-opened');
-        } else {
-            if (show) {
-                body.classList.add('control-opened');
+    L.Control.ControlToggler = L.Control.extend({
+        onAdd: (map) => {
+            let button = L.DomUtil.create('button', 'custom-panel leaflet-bar material-icons');
+            button.id = 'control-toggler';
+            button.innerText = 'menu';
+            button.onclick = L.Control.ControlToggler.prototype.toggle;
+            return button;
+        },
+        toggle: (show) => {
+            const body = document.querySelector('body');
+            if (show === undefined) {
+                body.classList.toggle('control-opened');
             } else {
-                body.classList.remove('control-opened');
+                if (show) {
+                    body.classList.add('control-opened');
+                } else {
+                    body.classList.remove('control-opened');
+                }
             }
         }
+    });
+    L.control.controlToggler = function(opts) {
+        return new L.Control.ControlToggler(opts);
     }
-});
-L.control.controlToggler = function(opts) {
-    return new L.Control.ControlToggler(opts);
+    L.control.controlToggler({
+        position: 'topleft',
+    }).addTo(map);
+
+    return map;
 }
-L.control.controlToggler({
-    position: 'topleft',
-}).addTo(map);
+const map = initMap();
 
 class LayerList extends Array {
     swap(a, b) {
@@ -281,9 +286,9 @@ const handleGeoPackage = async (fileList) => {
             geoPackage: gpkg,
             layerName: tableName,
             displayName: preset.displayName ?? null,
+            number: layersList.length,
             style: preset.style ?? undefined,
             pointToLayer: preset.pointToLayer ?? undefined,
-            number: layersList.length,
             onEachFeature: (feature, layer) => {
                 let knownFieldContent = '';
                 let unknownFieldContent = '';
