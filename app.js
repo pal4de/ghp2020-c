@@ -104,12 +104,16 @@ class LayerList extends Array {
     }
 
     arrayLayers() {
-        for (const layer of this) {
-            layer.bringToBack();
+        for (const layer of [...this].reverse()) {
+            if (map.hasLayer(layer)) {
+                layer.removeFrom(map);
+                layer.addTo(map);
+            }
         }
     }
 }
-const layersList = new LayerList();
+const layersList = new LayersList();
+
 const complementalsList = [];
 document.querySelector('#toggle-complementals').onchange = (e) => {
     for (const complemental of complementalsList) {
