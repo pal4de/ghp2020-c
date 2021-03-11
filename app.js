@@ -105,14 +105,14 @@ class LayerList extends Array {
                 this.render();
             };
             layerControl.querySelector('.layer-control-mover[data-direction="down"]').onclick = (e) => {
-                if (layer.number === layerList - 1) return;
+                if (layer.number === layersList - 1) return;
                 this.swap(layer.number, layer.number + 1);
                 this.render();
             };
             layerControl.querySelector('.layer-visibility').checked = map.hasLayer(layer);
             layerControlContainer.appendChild(layerControl);
         }
-        this.arrayLayers(layerList);
+        this.arrayLayers(layersList);
     }
 
     arrayLayers() {
@@ -121,7 +121,7 @@ class LayerList extends Array {
         }
     }
 }
-const layerList = new LayerList();
+const layersList = new LayerList();
 
 const handleGeoPackage = async (fileList) => {
     if (fileList.length === 0) return;
@@ -262,7 +262,7 @@ const handleGeoPackage = async (fileList) => {
             displayName: preset.displayName ?? null,
             style: preset.style ?? undefined,
             pointToLayer: preset.pointToLayer ?? undefined,
-            number: layerList.length,
+            number: layersList.length,
             onEachFeature: (feature, layer) => {
                 let knownFieldContent = '';
                 let unknownFieldContent = '';
@@ -285,9 +285,9 @@ const handleGeoPackage = async (fileList) => {
         layer.onAdd = (map) => L.GeoJSON.prototype.onAdd.call(layer, map); // 同じデータが重複して登録されることを防止
         if (initiallyVisible) layer.addTo(map);
 
-        layerList.push(layer);
+        layersList.push(layer);
     }
-    layerList.sort((layerA, layerB) => {
+    layersList.sort((layerA, layerB) => {
         const keysList = knownLayersList.map(preset => preset.layerName);
         const indexA = keysList.indexOf(layerA.options.layerName);
         const indexB = keysList.indexOf(layerB.options.layerName);
@@ -295,9 +295,9 @@ const handleGeoPackage = async (fileList) => {
         if (indexB === -1) return -1;
         return indexA - indexB;
     });
-    layerList.render();
+    layersList.render();
 
-    const allLayersGroup = L.featureGroup(layerList);
+    const allLayersGroup = L.featureGroup(layersList);
     map.flyToBounds(allLayersGroup.getBounds(), {
         duration: 1.5,
         easeLinearity: 0.5,
@@ -307,10 +307,10 @@ const handleGeoPackage = async (fileList) => {
 }
 
 const clear = () => {
-    for (const layer of layerList) {
+    for (const layer of layersList) {
         layer.remove();
     }
-    layerList.splice(0);
+    layersList.splice(0);
 
     document.querySelector('#layer-control-container').innerHTML = '';
     document.querySelector('#gpkg-selector').value = '';
