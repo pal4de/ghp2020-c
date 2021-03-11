@@ -145,94 +145,93 @@ const handleGeoPackage = async (fileList) => {
         return gpkg;
     }
 
-    const knownLayersList = {
-        'hinanjyo_with_priority': {
-            visible: true,
-            displayName: '給水所配置候補地 (優先度付き)',
-            fieldName: {
-                'p20_002': '名称',
-                'p20_003': '住所',
-            },
-            pointToLayer: (feature, layer) => {
-                const marker = L.marker(layer, {icon: HinanjoIcon});
-                return marker;
-            }
+    const knownLayersMap = new Map();
+    knownLayersMap.set('hinanjyo_with_priority', {
+        visible: true,
+        displayName: '給水所配置候補地 (優先度付き)',
+        fieldName: {
+            'p20_002': '名称',
+            'p20_003': '住所',
         },
-        'native:joinattributestable_1:target_kyusui': {
-            displayName: '給水所配置候補地',
-            pointToLayer: (feature, layer) => {
-                const marker = L.marker(layer, {icon: HinanjoIcon});
-                return marker;
-            },
-            fieldName: {
-                'p20_002': '名称',
-                'p20_003': '住所',
-            },
+        pointToLayer: (feature, layer) => {
+            const marker = L.marker(layer, {icon: HinanjoIcon});
+            return marker;
+        }
+    });
+    knownLayersMap.set('native:joinattributestable_1:target_kyusui', {
+        displayName: '給水所配置候補地',
+        pointToLayer: (feature, layer) => {
+            const marker = L.marker(layer, {icon: HinanjoIcon});
+            return marker;
         },
-        'qgis:voronoipolygons_1:kyusui_voronoi': {
-            displayName: 'ボロノイ分析結果',
-            style: () => ({
-                color: '#000000',
-                fillColor: 'transparent',
-                weight: 1
-            }),
+        fieldName: {
+            'p20_002': '名称',
+            'p20_003': '住所',
         },
-        'hinanjyo': {
-            visible: true,
-            displayName: '避難所',
-            fieldName: {
-                'p20_002': '名称',
-                'p20_003': '住所',
-            },
-            pointToLayer: (feature, layer) => {
-                const marker = L.marker(layer, {icon: HinanjoIcon});
-                return marker;
-            }
+    });
+    knownLayersMap.set('qgis:voronoipolygons_1:kyusui_voronoi', {
+        displayName: 'ボロノイ分析結果',
+        style: () => ({
+            color: '#000000',
+            fillColor: 'transparent',
+            weight: 1
+        }),
+    });
+    knownLayersMap.set('hinanjyo', {
+        visible: true,
+        displayName: '避難所',
+        fieldName: {
+            'p20_002': '名称',
+            'p20_003': '住所',
         },
-        // 'dansui_area': {},
-        'dansui_area2': {
-            visible: true,
-            displayName: '断水エリア'
+        pointToLayer: (feature, layer) => {
+            const marker = L.marker(layer, {icon: HinanjoIcon});
+            return marker;
+        }
+    });
+    // knownLayersMap.set('dansui_area', {});
+    knownLayersMap.set('dansui_area2', {
+        visible: true,
+        displayName: '断水エリア'
+    });
+    // knownLayersMap.set('dansui_area'3, {});
+    knownLayersMap.set('500m_mesh_2018_43', {
+        displayName: '人口',
+        fieldName: {
+            'ptn_2020': '人口'
         },
-        // 'dansui_area3': {},
-        '500m_mesh_2018_43': {
-            displayName: '人口',
-            fieldName: {
-                'ptn_2020': '人口'
-            },
-            style: (geoJsonFeature) => {
-                const selectColor = (population) => {
-                    if (population < 770) {
-                        return '#fef0d9';
-                    } else if (population < 1540) {
-                        return '#fdcc8a';
-                    } else if (population < 2310) {
-                        return '#fc8d59';
-                    } else if (population < 3080) {
-                        return '#e34a33';
-                    } else {
-                        return '#b30000';
-                    }
+        style: (feature) => {
+            const selectColor = (population) => {
+                if (population < 770) {
+                    return '#fef0d9';
+                } else if (population < 1540) {
+                    return '#fdcc8a';
+                } else if (population < 2310) {
+                    return '#fc8d59';
+                } else if (population < 3080) {
+                    return '#e34a33';
+                } else {
+                    return '#b30000';
                 }
+            }
 
-                const population = geoJsonFeature.properties.ptn_2020;
-                return {
-                    color: 'transparent',
-                    weight: 1,
-                    fillColor: selectColor(population),
-                    fillOpacity: 0.3,
-                }
-            }
-        },
-        'dem': {
-            displayName: '等高線',
-            style: () => ({
-                opacity: 1,
+            const population = feature.properties.ptn_2020;
+            return {
+                color: 'transparent',
                 weight: 1,
-                color: '#f34545',
-            })
-        },
-    };
+                fillColor: selectColor(population),
+                fillOpacity: 0.3,
+            }
+        }
+    });
+    knownLayersMap.set('dem', {
+        displayName: '等高線',
+        style: (feature) => ({
+            opacity: 1,
+            weight: 1,
+            color: '#f34545',
+        })
+    });
 
     const gpkgSelectorContainer = document.querySelector('#gpkg-selector-container');
     gpkgSelectorContainer.classList.add('gpkg-loading');
@@ -246,8 +245,8 @@ const handleGeoPackage = async (fileList) => {
         };
         let initiallyVisible = false;
 
-        if (tableName in knownLayersList) {
-            const preset = knownLayersList[tableName];
+        if (knownLayersMap.has(tableName)) {
+            const preset = knownLayersMap.get(tableName);
 
             initiallyVisible = preset.visible ?? false;
             layerOption.displayName = preset.displayName ?? null;
