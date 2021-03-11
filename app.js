@@ -204,7 +204,7 @@ const handleGeoPackage = async (fileList) => {
         {
             layerName: 'hinanjyo',
             displayName: '避難所',
-            visible: true,
+            complemental: true,
             fieldName: {
                 'p20_002': '名称',
                 'p20_003': '住所',
@@ -298,7 +298,6 @@ const handleGeoPackage = async (fileList) => {
                 layer.bindPopup(knownFieldContent + unknownFieldContent);
             }
         };
-        const initiallyVisible = preset.visible ?? false;
 
         const layer = L.geoPackageFeatureLayer([], layerOption);
         layer.displayName = preset.displayName ?? null;
@@ -306,12 +305,10 @@ const handleGeoPackage = async (fileList) => {
 
         layer.onAdd(map); // データの読み込み
         layer.onAdd = (map) => L.GeoJSON.prototype.onAdd.call(layer, map); // 同じデータが重複して登録されることを防止
-        if (initiallyVisible) layer.addTo(map);
 
+        if (preset.visible ?? false) layer.addTo(map);
+        if (preset.complemental ?? false) complementalsList.push(layer);
         layersList.push(layer);
-        if (preset.complemental ?? false) {
-            complementalsList.push(layer);
-        }
     }
     layersList.sort((layerA, layerB) => {
         const keysList = knownLayersList.map(preset => preset.layerName);
