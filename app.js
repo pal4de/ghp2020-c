@@ -76,7 +76,7 @@ class LayerList extends Array {
                 layerControl.querySelector('h6').prepend(layer.options.displayName);
                 layerControl.querySelector('h6 .subtext').append(layer.options.layerName);
             } else {
-                layerControl.querySelector('h6').prepend(layer.options.layerName);
+                layerControl.querySelector('h6 .subtext').prepend(layer.options.layerName);
             }
 
             layerControl.querySelector('[data-table-name]').dataset.tableName = layer.options.layerName;
@@ -139,17 +139,6 @@ const handleGeoPackage = async (fileList) => {
         return gpkg;
     }
 
-    const IconTemplate = L.Icon.extend({
-        options: {
-            iconSize: [15, 15],
-            shadowSize: [0, 0],
-            iconAnchor: [7.5, 7.5],
-            shadowAnchor: [0, 0],
-            popupAnchor: [7.5, 0]
-        }
-    });
-    const HinanjoIcon = new IconTemplate({iconUrl: './icons/hinanjo.png'});
-
     const knownLayersList = [
         {
             layerName: 'hinanjyo_with_priority',
@@ -161,27 +150,47 @@ const handleGeoPackage = async (fileList) => {
                 'p20_004': '施設の種類',
                 'p20_005': '収容人数',
                 'p20_007': '施設規模',
+                'priority': '優先度',
             },
-            pointToLayer: (feature, layer) => {
-                const marker = L.marker(layer, {icon: HinanjoIcon});
-                return marker;
-            }
+            pointToLayer: (feature, latlng) => {
+                const priority = feature.properties.priority;
+                if (priority === 0) return null;
+
+                const selectIcon = (priority) => {
+                    if (priority < 500) {
+                        return './icons/marker_green.png';
+                    } else if (priority < 1000) {
+                        return './icons/marker_yellow.png';
+                    } else {
+                        return './icons/marker_red.png';
+                    }
+                }
+
+                const icon = new L.Icon({
+                    iconUrl: selectIcon(priority),
+                    iconAnchor: [12, 41],
+                    iconSize: [25, 41],
+                    shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+                    shadowSize: [41, 41],
+                    popupAnchor: [1, -34],
+                    tooltipAnchor: [16, -28],
+                });
+                return L.marker(latlng, {icon});
+            },
         },
-        {
-            layerName: 'native:joinattributestable_1:target_kyusui',
-            displayName: '給水所配置候補地',
-            fieldName: {
-                'p20_002': '名称',
-                'p20_003': '住所',
-                'p20_004': '施設の種類',
-                'p20_005': '収容人数',
-                'p20_007': '施設規模',
-            },
-            pointToLayer: (feature, layer) => {
-                const marker = L.marker(layer, {icon: HinanjoIcon});
-                return marker;
-            },
-        },
+        // {
+        //     layerName: 'native:joinattributestable_1:target_kyusui',
+        //     displayName: '給水所配置候補地',
+        //     visible: true,
+        //     fieldName: {
+        //         'p20_002': '名称',
+        //         'p20_003': '住所',
+        //         'p20_004': '施設の種類',
+        //         'p20_005': '収容人数',
+        //         'p20_007': '施設規模',
+        //     },
+        //     // pointToLayer: (feature, latlng) => L.marker(latlng, {icon: KyusuishaIcon}),
+        // },
         {
             layerName: 'qgis:voronoipolygons_1:kyusui_voronoi',
             displayName: 'ボロノイ分析結果',
@@ -203,9 +212,13 @@ const handleGeoPackage = async (fileList) => {
                 'p20_005': '収容人数',
                 'p20_007': '施設規模',
             },
-            pointToLayer: (feature, layer) => {
-                const marker = L.marker(layer, {icon: HinanjoIcon});
-                return marker;
+            pointToLayer: (feature, latlng) => {
+                const icon = L.icon({
+                    iconUrl: './icons/hinanjo.png',
+                    iconSize: [15, 15],
+                    shadowSize: [0, 0],
+                });
+                return L.marker(latlng, {icon});
             },
         },
         // { layerName: 'dansui_area' },
