@@ -154,12 +154,11 @@ html, body {
 }
 
 #load-sample-button {
-    width: 100%;
-    padding: 10px;
+    padding: 2px 4px;
+    color: #aaa;
     background: transparent;
     border: none;
-    color: #aaa;
-    margin: auto;
+    border-bottom: solid 1px;
 }
 
 .gpkg-loading #load-sample-button {
