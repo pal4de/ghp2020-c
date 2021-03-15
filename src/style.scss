@@ -1,7 +1,5 @@
-:root {
-    --accent-color: #2f8B9f;
-    --control-transition: 0.5s;
-}
+$accent-color: #2f8B9f;
+$control-transition: 0.5s;
 
 html, body {
     height: 100%;
@@ -20,25 +18,28 @@ html, body {
     font-weight: lighter;
 }
 
-#app h6 {
-    margin: 0;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 12px;
-}
-#app h6:first-child {
-    margin-top: 0;
-}
+#app {
+    h6 {
+        margin: 0;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        font-family: 'Noto Sans JP', sans-serif;
+        font-size: 12px;
 
-#app p {
-    margin: 0;
-    margin-bottom: 15px;
-    font-size: 15px;
-}
+        &:first-child {
+            margin-top: 0;
+        }
+    }
 
-#app input, #app button, #app select {
-    cursor: pointer;
+    p {
+        margin: 0;
+        margin-bottom: 15px;
+        font-size: 15px;
+    }
+
+    input, button, select {
+        cursor: pointer;
+    }
 }
 
 #map {
@@ -47,12 +48,12 @@ html, body {
     z-index: 0;
     height: 100%;
     width: calc(100% - 400px);
-    transition: width var(--control-transition);
-}
+    transition: width $control-transition;
 
-@media screen and (max-width: 1000px) {
-    #map {
-        width: 100%;
+    @media screen and (max-width: 1000px) {
+        & {
+            width: 100%;
+        }
     }
 }
 
@@ -75,47 +76,47 @@ html, body {
     background-color: #fff;
     transform: translateX(0);
     box-shadow: 0 0 10px 1px hsla(210deg, 83%, 17%, 20%);
-    transition: width var(--control-transition), transform var(--control-transition);
-}
+    transition: width var(--control-transition), transform $control-transition;
 
-@media screen and (max-width: 1000px) {
-    #control {
-        transform: translateX(-100%);
-        width: min(400px, calc(100% - 50px));
+    @media screen and (max-width: 1000px) {
+        & {
+            transform: translateX(-100%);
+            width: min(400px, calc(100% - 50px));
+        }
+        .control-opened & {
+            transform: translateX(0);
+        }
     }
-    .control-opened #control {
-        transform: translateX(0);
+
+    header,
+    section {
+        margin-bottom: 30px;
     }
-}
 
-#control header,
-#control section {
-    margin-bottom: 30px;
-}
+    h1 {
+        margin: 0;
+        margin-bottom: 5px;
+        font-size: 200%;
+        font-weight: 900;
+    }
 
-#control h1 {
-    margin: 0;
-    margin-bottom: 5px;
-    font-size: 200%;
-    font-weight: 900;
-}
+    a {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: solid 2px;
+        padding: 2px;
+        margin: -2px;
+    }
 
-#control a {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: solid 2px;
-    padding: 2px;
-    margin: -2px;
-}
+    a:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
 
-#control a:hover {
-    background-color: rgba(0, 0, 0, 0.03);
-}
-
-.description {
-    color: #aaa;
-    font-size: 80%;
-    font-weight: 500;
+    .description {
+        color: #aaa;
+        font-size: 80%;
+        font-weight: 500;
+    }
 }
 
 #gpkg-selector-container {
@@ -136,22 +137,23 @@ html, body {
     display: inline-block;
     width: 100%;
     padding: 10px;
-}
 
-.gpkg-loading #gpkg-selector {
-    width: 0;
-    padding: 0;
+    .gpkg-loading & {
+        width: 0;
+        padding: 0;
+    }
 }
 
 #gpkg-selector-loading-text {
     display: none;
     padding: 10px;
     color: #aaa;
+
+    .gpkg-loading & {
+        display: inline-block;
+    }
 }
 
-.gpkg-loading #gpkg-selector-loading-text {
-    display: inline-block;
-}
 
 #load-sample-button {
     padding: 2px 4px;
@@ -159,10 +161,10 @@ html, body {
     background: transparent;
     border: none;
     border-bottom: solid 1px;
-}
 
-.gpkg-loading #load-sample-button {
-    display: none;
+    .gpkg-loading & {
+        display: none;
+    }
 }
 
 .layer-control-mover {
@@ -196,15 +198,16 @@ html, body {
     box-shadow: 0 0 0 2px rgba(0 0 0 / 20%);
     color: rgba(0, 0, 0, 0.7);
     opacity: 0;
-    transition: opacity var(--control-transition);
-}
+    transition: opacity $control-transition;
 
-@media screen and (max-width: 1000px) {
-    #control-toggler {
-        pointer-events: auto;
-        opacity: 1;
+    @media screen and (max-width: 1000px) {
+        & {
+            pointer-events: auto;
+            opacity: 1;
+        }
     }
 }
+
 
 #fader {
     position: absolute;
@@ -214,12 +217,13 @@ html, body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     opacity: 0;
-    transition: opacity var(--control-transition);
-}
+    transition: opacity $control-transition;
 
-@media screen and (max-width: 1000px) {
-    .control-opened #fader {
-        pointer-events: auto;
-        opacity: 1;
+    @media screen and (max-width: 1000px) {
+        .control-opened & {
+            pointer-events: auto;
+            opacity: 1;
+        }
     }
 }
+

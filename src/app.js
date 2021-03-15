@@ -1,3 +1,7 @@
+import 'leaflet';
+import '@ngageoint/geopackage';
+import '@ngageoint/leaflet-geopackage';
+
 const initMap = () => {
     const basicMap = new L.tileLayer(
         'https://tile.openstreetmap.jp/styles/maptiler-basic-ja/{z}/{x}/{y}.png',
