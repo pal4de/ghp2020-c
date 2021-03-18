@@ -1,6 +1,6 @@
 import 'leaflet';
-import '@ngageoint/geopackage';
-import '@ngageoint/leaflet-geopackage';
+import '../lib/geopackage';
+import '../lib/leaflet-geopackage';
 
 const initMap = () => {
     const basicMap = new L.tileLayer(

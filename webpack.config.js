@@ -7,7 +7,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'main.js'
     },
-
+    cache: true,
     module: {
         rules: [
             {
@@ -17,6 +17,13 @@ module.exports = {
                     'css-loader',
                     'sass-loader'
                 ]
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'assets/[name].[hash].[ext]',
+                },
             },
         ]
     },
