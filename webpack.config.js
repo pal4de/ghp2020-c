@@ -8,6 +8,7 @@ module.exports = {
         filename: 'main.js'
     },
     cache: true,
+    devtool: 'source-map',
     module: {
         rules: [
             {
